@@ -1,0 +1,26 @@
+{
+  "name": "http2midi",
+  "version": "1.0.0",
+  "description": "A Webserver, which accepts HTTP Requests and outputs MIDI to control basic functionality of studio one 5 by presonus",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "HTTP2MIDI"
+  },
+  "keywords": [
+    "HTTP",
+    "MIDI",
+    "Converter"
+  ],
+  "author": "Josia Scheerle",
+  "license": "MIT",
+  "dependencies": {
+    "easymidi": "^2.1.0",
+    "express": "^4.17.2",
+    "midi": "^2.0.0",
+    "url-parse": "^1.5.4"
+  }
+}
