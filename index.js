@@ -4,8 +4,6 @@ const express = require('express');
 const app = express();
 const url = require('url-parse');
 const midi = require('easymidi');
-const { output } = require('midi');
-// const midi = require('midi');
 
 let midiOutput = new midi.Output("Name", true);
 
@@ -14,10 +12,12 @@ let midiOutput = new midi.Output("Name", true);
 // });
 // midiOutput.openVirtualPort("HTTP-Controller");
 
+/*
 midiOutput.send("noteon", {
-    note: 12 * 5,
-    velocity: 127,
+    controller: 84
+    value: 127,
     channel: 1
+}
 })
 setTimeout(() => {
     midiOutput.send("noteoff", {
@@ -28,8 +28,23 @@ setTimeout(() => {
 }, 200);
 
 
+67  --> g
+67  --> g
+56  --> V
+52  --> R
+59  --> Y
+49  --> I
+50  --> P
+55  --> U
+59  --> Y
+49  --> I
 
 
+
+
+
+
+*/
 
 app.get('/send', function(req, res){
     // console.log(url(req.url, true).query);
