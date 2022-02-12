@@ -17,3 +17,5 @@ Sleep, 1000
 WinWait, npm run startup
 Sleep, 1000
 WinMinimize 
+
+ExitApp, 1
