@@ -8,9 +8,11 @@
 
 sleep 1000
 BlockInput MouseMove
-ToolTip, Starting Node.js Webserver
+;ToolTip, Starting Node.js Webserver
 Run, cmd.exe
-Sleep, 1000
+Sleep, 2000
+WinActivate, C:\Windows\SYSTEM32\cmd.exe
+Sleep, 5000
 SendInput, npm run startup {Enter}
 BlockInput MouseMoveOff
 Sleep, 1000

@@ -5,6 +5,9 @@ const app = express();
 const url_parse = require('url-parse');
 const midi = require('easymidi');
 
+console.log('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n')
+
+
 //let midiOutput = new midi.Output('3-4 CUAD-CAPTURE');
 
 app.get('/kill', (req, res) => {
@@ -13,7 +16,7 @@ app.get('/kill', (req, res) => {
 });
 app.get('/send', function(req, res){
     let url = url_parse(req.url, true).query.action;
-    console.log(url);
+    //console.log(url);
     res.send('Request recieved!');
     switch (url){
         case 'startRec': 

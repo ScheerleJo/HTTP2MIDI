@@ -3,7 +3,7 @@
 This Repository includes a node.js Webserver, which handles basic conversion from an HTTP-Request to a MIDI signal. 
 The Aforementioned MIDI Signal is used to control recording a DAW (Digital Audio Workstation), in this case Presonus' Studio One
 
-
+The basic idea is, that when you press a button on a Streamdeck running [Companion](https://github.com/bitfocus/companion) it sends an HTTP-Request to the computer running Studio One for audio recording. There the Midi Signal gets created and input in the DAW.
 
 ## How it works
 The Basic concept is, that the webserver gets an HTTP-Request looking like that:
