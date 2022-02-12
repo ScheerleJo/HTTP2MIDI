@@ -1,3 +1,5 @@
 node_modules/
 .vscode
 Virtual_MIDI
+index.ts
+exportAudio.ahk
