@@ -8,10 +8,10 @@ const midi = require('easymidi');
 console.log('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n')
 
 
-//let midiOutput = new midi.Output('3-4 CUAD-CAPTURE');
+let midiOutput = new midi.Output('QUAD-CAPTURE');
 
 app.get('/kill', (req, res) => {
-    //midiOutput.close();
+    midiOutput.close();
     process.exit();
 });
 app.get('/send', function(req, res){
@@ -21,23 +21,27 @@ app.get('/send', function(req, res){
     switch (url){
         case 'startRec': 
             console.log('Recording will be started'); 
-            // sendMidi(85);
+            sendMidi(85);
             break;
         case 'stopRec': 
             console.log('Recording will be stopped');
-            // sendMidi(86);
+            sendMidi(86);
             break;
         case 'setMarker':
             console.log('Marker will be set');
-            // sendMidi(87);
+            sendMidi(87);
+            break;
+	    case 'setEndMarker': 
+            console.log('Markers will be set correctly to recording length');
+            sendMidi(90);
             break;
         case 'normalize':
             console.log('Normalizing Effect will be started');
-            // sendMidi(88)
+            sendMidi(88)
             break;
         case 'exportAudio': 
             console.log('Exporting Process will be started');
-            // sendMidi(89);
+            sendMidi(89);
             break;
         default: console.log('Action not detected! Error!'); break;     
     }
