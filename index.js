@@ -95,11 +95,4 @@ function sendMidiPresenter(note){
         value: 127,
         channel: 2
     });
-    setTimeout(() => {
-        midiOutput.send("noteoff", {
-            note: note,
-            velocity: 0,
-            channel: 2
-        })
-    }, 200);
 }
