@@ -5,6 +5,8 @@ const app = express();
 const url_parse = require('url-parse');
 const midi = require('easymidi');
 
+let clientIP;
+
 console.log('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n')
 
 
@@ -16,6 +18,7 @@ app.get('/kill', (req, res) => {
 });
 app.get('/send', function(req, res){
     let url = url_parse(req.url, true).query.action;
+    clientIP = req.ip;
     //console.log(url);
     res.send('Request recieved!');
     switch (url){
