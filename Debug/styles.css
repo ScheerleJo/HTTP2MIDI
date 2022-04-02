@@ -1,0 +1,42 @@
+* {
+    font-family: Roboto, Noto, sans-serif;
+}
+
+body {
+    background: rgb(30,30,30);
+    display: block;
+}
+
+input {
+    background: rgb(70, 70, 70);
+    color: rgb(200, 200, 200);
+    height: 50px;
+    width: 160px;
+    display: inline-table;
+    margin: 5px;
+    border: rgb(130, 0 ,0) 2px solid;
+    border-radius: 3px;
+}
+input:hover {
+    background: rgb(90, 90, 90);
+    color: white;
+}
+.text {
+    height: 50px;
+    width: 300px;
+    background: rgb(70, 70, 70);
+    display: inline-table;
+    margin: 5px;
+    vertical-align: auto;
+    border: rgb(120, 120, 120) 2px solid;
+    border-radius: 3px;
+    color: rgb(200, 200, 200);
+    padding: 5px;
+}
+
+tr {
+    margin: 5px;
+    border: rgb(25, 25, 25) 2px dashed;
+    display: block;
+    background: rgb(50, 50, 50);
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Debugger</title>
+</head>
+<body>
+<table>
+    <tr>
+        <td>
+            <input type="button" id="StartRec" value="start Rec">
+        </td>
+        <td>
+            <div class="text">start the Recording</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="button" id="StopRec" value="stop Rec">
+        </td>
+        <td>
+            <div class="text">stop the current Recording</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="button" id="SetMarker" value="set Marker">
+        </td>
+        <td>
+            <div class="text">set a Maker at  the current position</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="button" id="SelectAudio" value="set Marker to Selection">
+        </td>
+        <td>
+            <div class="text">set the Start and End Maker to selection</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="button" id="NormalizeAudio" value="normalize Audio">
+        </td>
+        <td>
+            <div class="text">normalize Audio on the current selected Clip</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="button" id="ExportAudio" value="export Audio">
+        </td>
+        <td>
+            <div class="text">export the Audio</div>
+        </td>
+    </tr>
+</table>
+
+<script>
+    document.getElementById('StartRec').addEventListener('onclick', function(){
+        alert('startRec');
+    });
+    document.getElementById('StopRec').addEventListener('click', function(){
+        alert('stopRec');
+    });
+    document.getElementById('SetMarker').addEventListener('click', function(){
+        alert('setMarker');
+    });
+    document.getElementById('SelectAudio').addEventListener('click', function(){
+        alert('selectAudio');
+    });
+    document.getElementById('NormalizeAudio').addEventListener('click', function(){
+        alert('normalizeAudio');
+    });
+    document.getElementById('ExportAudio').addEventListener('click', function(){
+        alert('exportAudio');
+    });
+
+
+
+
+</script>
+
+</body>
+</html>
