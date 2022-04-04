@@ -1,7 +1,7 @@
 # HTTP2MIDI
 
 This Repository includes a node.js Webserver, which handles basic conversion from an HTTP-Request to a MIDI signal. 
-The Aforementioned MIDI Signal is used to control recording a DAW (Digital Audio Workstation), in this case Presonus' Studio One on Midi-Channel 1.
+The Aforementioned MIDI Signal is used to control recording a DAW (Digital Audio Workstation), in this case [Presonus' Studio One](https://www.presonus.com/products/Studio-One) on Midi-Channel 1.
 New Functionality: The Implementation for midi2presenter by [WorshipExtreme](https://www.worshipextreme.com/en-us) on Midi-Channel 2.
 
 The basic idea is, that when you press a button on a Streamdeck running [Companion](https://github.com/bitfocus/companion) it sends an HTTP-Request to the computer running Studio One for audio recording. There the Midi Signal gets created and input in the DAW.
@@ -9,9 +9,9 @@ The basic idea is, that when you press a button on a Streamdeck running [Compani
 ## How it works
 The Basic concept is, that the webserver gets an HTTP-Request looking like that:
 ```
-http://localhost:8004/send/?action=...
+http://localhost:8004/send/?action=*myaction*
 ```
-The Webserver outputs a normal MIDI-CC-Signal `(CC = Controll-Change)` looking something like that but in hex:
+The Webserver outputs a normal MIDI-CC-Signal `CC = Controll-Change` looking something like that but in hex:
 ```
 channel: 0-15,
 controller: 0-127,
