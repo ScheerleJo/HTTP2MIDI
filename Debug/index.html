@@ -9,9 +9,10 @@
 </head>
 <body>
 <table>
+    <caption>Presonus Studio One</caption>
     <tr>
         <td>
-            <input type="button" id="StartRec" value="start Rec">
+            <button id="StartRec">start Rec</button>
         </td>
         <td>
             <div class="text">start the Recording</div>
@@ -19,7 +20,7 @@
     </tr>
     <tr>
         <td>
-            <input type="button" id="StopRec" value="stop Rec">
+            <button id="StopRec">stop Rec</button>
         </td>
         <td>
             <div class="text">stop the current Recording</div>
@@ -27,7 +28,7 @@
     </tr>
     <tr>
         <td>
-            <input type="button" id="SetMarker" value="set Marker">
+            <button id="SetMarker">set Marker</button>
         </td>
         <td>
             <div class="text">set a Maker at  the current position</div>
@@ -35,7 +36,7 @@
     </tr>
     <tr>
         <td>
-            <input type="button" id="SelectAudio" value="set Marker to Selection">
+            <button id="SelectAudio">set Marker to Selection</button>
         </td>
         <td>
             <div class="text">set the Start and End Maker to selection</div>
@@ -43,7 +44,7 @@
     </tr>
     <tr>
         <td>
-            <input type="button" id="NormalizeAudio" value="normalize Audio">
+            <button id="NormalizeAudio">normalize Audio</button>
         </td>
         <td>
             <div class="text">normalize Audio on the current selected Clip</div>
@@ -51,7 +52,7 @@
     </tr>
     <tr>
         <td>
-            <input type="button" id="ExportAudio" value="export Audio">
+            <button id="ExportAudio">export Audio</button>
         </td>
         <td>
             <div class="text">export the Audio</div>
@@ -59,26 +60,118 @@
     </tr>
 </table>
 
+<table>
+    <caption>Worship Extreme: Presenter</caption>
+    <tr>
+        <td>
+            <button id="setFirstItem">to first Item</button>
+        </td>
+        <td>
+            <div class="text">change Presentation to the first item in the list of this service</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id="prevItem">previous Item</button>
+        </td>
+        <td>
+            <div class="text">change Presentation to previous Item</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id="nextItem">next Item</button>
+        </td>
+        <td>
+            <div class="text">change Presentation to next Item</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id="setFirstSlide">to first Slide</button>
+        </td>
+        <td>
+            <div class="text">change Presentation to the first slide in the currently selected Item</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id="prevSlide">previous Slide</button>
+        </td>
+        <td>
+            <div class="text">change Presentation to previous Slide</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id="nextSlide">next Slide</button>
+        </td>
+        <td>
+            <div class="text">change Presentation to next Slide</div>
+        </td>
+    </tr>
+</table>
 <script>
-    document.getElementById('StartRec').addEventListener('onclick', function(){
-        alert('startRec');
+
+    document.getElementById('StartRec').addEventListener('click', function(){
+        // alert('startRec');
+        httpGet('startRec')
     });
     document.getElementById('StopRec').addEventListener('click', function(){
-        alert('stopRec');
+        // alert('stopRec');
+        httpGet('stopRec')
     });
     document.getElementById('SetMarker').addEventListener('click', function(){
-        alert('setMarker');
+        // alert('setMarker');
+        httpGet('setMarker')
     });
     document.getElementById('SelectAudio').addEventListener('click', function(){
-        alert('selectAudio');
+        // alert('selectAudio');
+        httpGet('setEndMarker')
     });
     document.getElementById('NormalizeAudio').addEventListener('click', function(){
-        alert('normalizeAudio');
+        // alert('normalizeAudio');
+        httpGet('normalize')
     });
     document.getElementById('ExportAudio').addEventListener('click', function(){
-        alert('exportAudio');
+        // alert('exportAudio');
+        httpGet('exportAudio')
     });
 
+
+    document.getElementById('setFirstItem').addEventListener('click', function(){
+        // alert('setFirstItem');
+        httpGet('changeItem')
+    });
+    document.getElementById('prevItem').addEventListener('click', function(){
+        // alert('prevItem');
+        httpGet('prevItem')
+    });
+    document.getElementById('nextItem').addEventListener('click', function(){
+        // alert('nextItem');
+        httpGet('nextItem')
+    });
+    document.getElementById('setFirstSlide').addEventListener('click', function(){
+        // alert('setFirstSlide');
+        httpGet('changeSlide')
+    });
+    document.getElementById('prevSlide').addEventListener('click', function(){
+        // alert('prevSlide');
+        httpGet('prevSlide')
+    });
+    document.getElementById('nextSlide').addEventListener('click', function(){
+        // alert('nextSlide');
+        httpGet('nextSlide')
+    });
+
+    function httpGet(action){
+        let url = `http://localhost:8010/send?action=${action}`;
+        console.log(url);
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", url);
+        xmlhttp.send();
+        return xmlhttp.responseText();
+    }
 
 
 
