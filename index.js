@@ -1,5 +1,5 @@
 const PORT = 8010;
-
+const fs = require('fs')
 const express = require('express');
 const app = express();
 const url_parse = require('url-parse');
@@ -8,6 +8,10 @@ const midi = require('easymidi');
 let clientIP;
 
 console.log('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n')
+
+
+//For Frontend: please consider watching the tutorial on how to make a frontend with html in express.js
+//https://www.youtube.com/watch?v=1wXYg8Eslnc
 
 
 // let midiOutput = new midi.Output('QUAD-CAPTURE');

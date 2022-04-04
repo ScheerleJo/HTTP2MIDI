@@ -8,8 +8,83 @@
     <title>Debugger</title>
 </head>
 <body>
+    <style>
+        * {
+    font-family: Roboto, Noto, sans-serif;
+    color:rgb(200, 200, 200);
+}
+
+body {
+    background: rgb(30,30,30);
+    display: block;
+}
+
+button {
+    background: rgb(83, 83, 83);
+    height: 50px;
+    width: 160px;
+    display: inline-table;
+    margin: 5px;
+    border: rgb(130, 0 ,0) 2px solid;
+    border-radius: 3px;
+}
+button:hover {
+    background: rgb(90, 90, 90);
+    color: white;
+}
+button:active {
+    background: rgb(202, 0, 0);
+    color: white;
+}
+.text {
+    height: 50px;
+    width: 300px;
+    background: rgb(83, 83, 83);
+    display: inline-table;
+    margin: 5px;
+    vertical-align: auto;
+    border: rgb(120, 120, 120) 2px solid;
+    border-radius: 3px;
+    color: rgb(200, 200, 200);
+    padding: 5px;
+}
+table {
+    background: rgb(54, 54, 54);
+    border:rgb(25, 25, 25) 2px dashed;
+    display: inline-block;
+    margin: 10px;
+}
+tr {
+    margin: 5px;
+    border: rgb(25, 25, 25) 2px solid;
+    display: block;
+    background: rgb(70, 70, 70);
+}
+caption {
+    margin: 5px 0;
+    padding-bottom: 10px;
+    border-bottom:rgb(25, 25, 25) 1px solid;
+    font-size: 25px;
+}
+caption img  {
+    display: inline-block;
+    height: 40px;
+    vertical-align:-10px;
+}
+#Response {
+    width: 522px;
+    height: 200px;
+    margin: 10px;
+    background: rgb(83, 83, 83);
+    display: block;
+    resize: none;
+}
+    </style>
 <table>
-    <caption>Presonus Studio One</caption>
+    <caption>
+        <img id="s1" src="/Debug/images/Studio One.png">
+        Presonus Studio One
+    </caption>
     <tr>
         <td>
             <button id="StartRec">start Rec</button>
@@ -61,7 +136,10 @@
 </table>
 
 <table>
-    <caption>Worship Extreme: Presenter</caption>
+    <caption>
+        <img id="presenter" src="/Debug/images/Presenter.png">
+        Worship Extreme: Presenter
+    </caption>
     <tr>
         <td>
             <button id="setFirstItem">to first Item</button>

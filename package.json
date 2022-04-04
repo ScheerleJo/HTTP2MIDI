@@ -4,7 +4,8 @@
   "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI CC-Commands to control basic functionality of Studio One 5 Prime by Presonus",
   "main": "index.js",
   "scripts": {
-    "startup": "node index.js"
+    "startup": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,9 @@
   "dependencies": {
     "easymidi": "^2.1.0",
     "express": "^4.17.2",
+    "fs": "^0.0.1-security",
     "midi": "^2.0.0",
+    "nodemon": "^2.0.15",
     "url-parse": "^1.5.4"
   }
 }
