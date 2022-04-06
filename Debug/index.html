@@ -189,8 +189,19 @@ caption img  {
         </td>
     </tr>
 </table>
-<script>
 
+<div class="container">
+    <div class="kill-container">
+        <button id="killServer">kill Webserver</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('killServer').addEventListener('click', function(){
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", 'http://localhost:8010/kill');
+        xmlhttp.send();
+    });
     document.getElementById('StartRec').addEventListener('click', function(){
         // alert('startRec');
         httpGet('startRec')
@@ -244,7 +255,6 @@ caption img  {
 
     function httpGet(action){
         let url = `http://localhost:8010/send?action=${action}`;
-        console.log(url);
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", url);
         xmlhttp.send();

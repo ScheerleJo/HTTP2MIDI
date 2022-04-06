@@ -7,7 +7,7 @@ const midi = require('easymidi');
 
 let clientIP;
 
-console.log('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n')
+printDebugInfo('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n', 'info');
 
 
 //For Frontend: please consider watching the tutorial on how to make a frontend with html in express.js
@@ -17,7 +17,8 @@ console.log('Webserver for communication between Companion and Studio One\n\nTry
 // let midiOutput = new midi.Output('QUAD-CAPTURE');
 
 app.get('/kill', (req, res) => {
-    midiOutput.close();
+    //midiOutput.close();
+    printDebugInfo('Application will shut down', 'info')
     process.exit();
 });
 app.get('/send', function(req, res){
@@ -27,51 +28,51 @@ app.get('/send', function(req, res){
     res.send('Request recieved!');
     switch (url){
         case 'startRec': 
-            console.log('Recording will be started'); 
+            printDebugInfo('Recording will be started', 's1'); 
             sendMidiStudio(85);
             break;
         case 'stopRec': 
-            console.log('Recording will be stopped');
+            printDebugInfo('Recording will be stopped', 's1');
             sendMidiStudio(86);
             break;
         case 'setMarker':
-            console.log('Marker will be set');
+            printDebugInfo('Marker will be set', 's1');
             sendMidiStudio(87);
             break;
 	    case 'setEndMarker': 
-            console.log('Markers will be set correctly to recording length');
+            printDebugInfo('Markers will be set correctly to recording length', 's1');
             sendMidiStudio(90);
             break;
         case 'normalize':
-            console.log('Normalizing Effect will be started');
-            sendMidiStudio(88)
+            printDebugInfo('Normalizing Effect will be started', 's1');
+            sendMidiStudio(88);
             break;
         case 'exportAudio': 
-            console.log('Exporting Process will be started');
+            printDebugInfo('Exporting Process will be started', 's1');
             sendMidiStudio(89);
             break;
         case 'changeItem': 
-            console.log('Item Selection will be changed');
+            printDebugInfo('Item Selection will be changed', 'presenter');
             sendMidiPresenter(0);
             break;
         case 'prevItem': 
-            console.log('Prevoius Item will be executed');
+            printDebugInfo('Prevoius Item will be executed', 'presenter');
             sendMidiPresenter(2);
             break;
         case 'nextItem': 
-            console.log('Next Item will be executed');
+            printDebugInfo('Next Item will be executed', 'presenter');
             sendMidiPresenter(3);
             break;
         case 'changeSlide': 
-            console.log('Slide Selection will be changed');
+            printDebugInfo('Slide Selection will be changed', 'presenter');
             sendMidiPresenter(4);
             break;
         case 'prevSlide': 
-            console.log('Prevoius Slide will be executed');
+            printDebugInfo('Prevoius Slide will be executed', 'presenter');
             sendMidiPresenter(5);
             break;
         case 'nextSlide': 
-            console.log('Next Slide will be executed');
+            printDebugInfo('Next Slide will be executed', 'presenter');
             sendMidiPresenter(6);
             break;
         default: console.log('Action not detected! Error!'); break;     
@@ -83,7 +84,8 @@ app.listen(PORT, function(){
 });
 
 function sendMidiStudio(cc){
-    midiOutput.send("cc", {
+    
+    /*midiOutput.send("cc", {
         controller: cc,
         value: 127,
         channel: 1
@@ -94,12 +96,23 @@ function sendMidiStudio(cc){
             velocity: 0,
             channel: 1
         })
-    }, 200);
+    }, 200);*/
 }
 function sendMidiPresenter(note){
-    midiOutput.send("noteon", {
+    /*midiOutput.send("noteon", {
         note: note,
         value: 127,
         channel: 2
-    });
+    });*/
+}
+function printDebugInfo(text, state){
+    if(state == 's1'){
+        console.log('\x1b[34m', `http2s1: ${text}`);
+    } 
+    else if(state == 'presenter') {
+        console.log('\x1b[32m', `http2presenter: ${text}`)
+    }
+    else if(state = 'info'){
+        console.log('\x1b[37m', `Info: ${text}`);
+    }
 }
