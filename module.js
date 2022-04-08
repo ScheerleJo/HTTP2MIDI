@@ -22,17 +22,16 @@ function deactivateMidiAction(state){
 };
 
 function printDebugInfo(text, state){
-    if(state == 's1'){
-        console.log('\x1b[34m', `http2s1: ${text}`);
-    } 
-    else if(state == 'presenter') {
-        console.log('\x1b[32m', `http2presenter: ${text}`)
-    }
-    else if(state = 'info'){
-        console.log('\x1b[37m', `Info: ${text}`);
+    switch(state){
+        case 's1': console.log('\x1b[34m', `http2s1: ${text}`); break;
+        case 'presenter': console.log('\x1b[32m', `http2presenter: ${text}`); break;
+        case 'info': console.log('\x1b[37m', `Info: ${text}`); break;
+        default: 
+            console.log('\x1b[31m', `Èrror: Command not found!:`);
+            console.log('\x1b[37m', text);
+            break;
     }
 }
-
 
 function startMidiOutput(){
     if(deactivateMidi == false){
@@ -44,6 +43,7 @@ function killMidiOutput(){
         midiOutput.close();
     }
 }
+
 function handleHttpAction (url){
     let action = url_parse(url, true).query.action;
     switch (action){

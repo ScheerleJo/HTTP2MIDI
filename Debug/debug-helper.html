@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Debugger</title>
+</head>
+<body>
+<div class="container" id="s1-container">
+    <div class="container-head">
+        <img id="s1" src="/Debug/images/Studio One.png">
+        <h2>Presonus Studio One</h2>
+    </div>
+    <div class="container-body">
+        <div class="container-event">
+            <button id="StartRec">start Rec</button>
+            <textarea>start the Recording</textarea>
+        </div>
+        <div class="container-event">
+            <button id="StopRec">stop Rec</button>
+            <textarea>stop the current Recording</textarea>
+        </div>
+        <div class="container-event">
+            <button id="SetMarker">set Marker</button>
+            <textarea>set a Maker at  the current position</textarea>
+        </div>
+        <div class="container-event">
+            <button id="SelectAudio">set Marker to Selection</button>
+            <textarea>set the Start and End Maker to selection</textarea>
+        </div>
+        <div class="container-event">
+            <button id="NormalizeAudio">normalize Audio</button>
+            <textarea>normalize Audio on the current selected Clip</textarea>
+        </div>
+        <div class="container-event">
+            <button id="ExportAudio">export Audio</button>
+            <textarea>export the Audio</textarea>
+        </div>
+    </div>
+</div>
+<div class="container" id="presenter-container">
+    <div class="container-head">
+        <img id="s1" src="/Debug/images/Presenter.png">
+        <h2>Worship Extreme: Presenter</h2>
+    </div>
+    <div class="container-body">
+        <div class="container-event">
+            <button id="setFirstItem">to first Item</button>
+            <textarea>change Presentation to the first item in the list of this service</textarea>
+        </div>
+        <div class="container-event">
+            <button id="prevItem">previous Item</button>
+            <textarea>change Presentation to previous Item</textarea>
+        </div>
+        <div class="container-event">
+            <button id="nextItem">next Item</button>
+            <textarea>change Presentation to next Item</textarea>
+        </div>
+        <div class="container-event">
+            <button id="setFirstSlide">to first Slide</button>
+            <textarea>change Presentation to the first slide in the currently selected Item</textarea>
+        </div>
+        <div class="container-event">
+            <button id="prevSlide">previous Slide</button>
+            <textarea>change Presentation to previous Slide</textarea>
+        </div>
+        <div class="container-event">
+            <button id="nextSlide">next Slide</button>
+            <textarea>change Presentation to next Slide</textarea>
+        </div>
+    </div>
+</div>
+<div class="container" id="callback-container">
+    <div class="container-head">
+        <h2>Callback & Status</h2>
+    </div>
+    <div class="container-body">
+        <div class="kill-container">
+            <button id="killServer">kill Webserver</button>
+        </div>
+    </div>
+</div>
+<script src="./debug-helper.js"></script>
+
+</body>
+</html>

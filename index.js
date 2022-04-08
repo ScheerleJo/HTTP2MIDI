@@ -16,9 +16,12 @@ app.get('/kill', (req, res) => {
     lib.killMidiOutput();
     process.exit();
 });
-app.get('/send', function(req, res){
+app.get('/send', (req, res) => {
     res.send('Request recieved!'); 
     lib.handleHttpAction(req.url);
+});
+app.get('/', (req, res) =>{
+    
 });
 
 app.listen(PORT, function(){
