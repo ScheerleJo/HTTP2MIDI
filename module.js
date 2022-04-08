@@ -11,7 +11,11 @@ module.exports = {
     handleHttpAction,
     killMidiOutput
 }
-
+/**
+ * function to deactivate the MIDI-Output sequence.
+ * Useful, when programming and not having a MIDI-Controller
+ * @param  {boolean} state
+ */
 function deactivateMidiAction(state){
     if(state== true){
         deactivateMidi = true;
@@ -20,7 +24,13 @@ function deactivateMidiAction(state){
         deactivateMidi = false;
     }
 };
-
+/**
+ * A function to print debugging info in different colors depending on the type of info
+ * @param  {string} text 
+ * the printed text, which will be shown on the command prompt
+ * @param  {string} state
+ * the parameter to select the right color
+ */
 function printDebugInfo(text, state){
     switch(state){
         case 's1': console.log('\x1b[34m', `http2s1: ${text}`); break;
@@ -43,7 +53,11 @@ function killMidiOutput(){
         midiOutput.close();
     }
 }
-
+/**
+ * Toggle the corresponding action to the input action in the querystring
+ * @param  {object} url
+ * URL of the HTTP GET-Request
+ */
 function handleHttpAction (url){
     let action = url_parse(url, true).query.action;
     switch (action){
@@ -98,6 +112,11 @@ function handleHttpAction (url){
         default: console.log('Action not detected! Error!'); break;     
     }
 }
+/**
+ * Sending ControlChange Commands on MIDI-Channel 1
+ * @param  {number} cc
+ * Number of the midi CC-Command; 7-Bit Numbers
+ */
 function sendMidiStudio(cc){
     if(deactivateMidi == false){
         midiOutput.send("cc", {
@@ -115,6 +134,11 @@ function sendMidiStudio(cc){
     }
     
 }
+/**
+ * Sending NoteOn Commands on MIDI-Channel 2
+ * @param  {number} note
+ * Number of midi Note; 7-Bit Numbers 
+ */
 function sendMidiPresenter(note){
     if(deactivateMidi == false){
         midiOutput.send("noteon", {

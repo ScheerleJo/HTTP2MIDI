@@ -3,7 +3,7 @@ const lib = require('./module');
 const express = require('express');
 const app = express();
 
-lib.deactivateMidiAction(true);
+lib.deactivateMidiAction(false);
 
 lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n', 'info');
 lib.startMidiOutput();
