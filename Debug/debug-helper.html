@@ -77,7 +77,21 @@
         <h2>Callback & Status</h2>
     </div>
     <div class="container-body">
-        <div class="kill-container">
+        <div class="container-event">
+            <div class="radio">
+                <input type="radio" name="switch" id="local" value="local" checked>
+                <label for="local">Call Functions Locally</label>
+            </div>
+            <div class="radio">
+                <input type="radio" name="switch" id="http" value="http">
+                <label for="http">Call Functions via HTTP</label>
+            </div>
+        </div>
+        <div class="container-event">
+            <h3>Response</h3>
+            <textarea id="response"></textarea>
+        </div>
+        <div class="container-event">
             <button id="killServer">kill Webserver</button>
         </div>
     </div>

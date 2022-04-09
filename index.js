@@ -1,11 +1,12 @@
 const PORT = 8010;
 const lib = require('./module');
+const url_parse = require('url-parse');
 const express = require('express');
 const app = express();
 
-lib.deactivateMidiAction(false);
+lib.deactivateMidiAction(true);
 
-lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n', 'info');
+lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\nTrying to start the server...\n', 'info', 'local');
 lib.startMidiOutput();
 
 //TODO: For Frontend: please consider watching the tutorial on how to make a frontend with html in express.js
@@ -18,7 +19,7 @@ app.get('/kill', (req, res) => {
 });
 app.get('/send', (req, res) => {
     res.send('Request recieved!'); 
-    lib.handleHttpAction(req.url);
+    lib.handleAction(url_parse(req.url, true).query.action, 'http');
 });
 app.get('/', (req, res) =>{
     
@@ -27,3 +28,5 @@ app.get('/', (req, res) =>{
 app.listen(PORT, function(){
     console.log(`Server running on Port ${PORT}`);
 });
+
+

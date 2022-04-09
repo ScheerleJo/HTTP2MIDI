@@ -68,3 +68,16 @@ textarea {
     display: inline-block;
     resize: none;
 }
+#response {
+    position: relative;
+    width: 89%;
+    height: 75px;
+    margin-top: 0px;
+}
+.radio {
+    display: block;
+    margin: 10px;
+}
+h3 {
+    margin: 5px 10px 0px 10px;
+}

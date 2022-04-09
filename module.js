@@ -1,6 +1,6 @@
-const url_parse = require('url-parse');
 const midi = require('easymidi');
 let deactivateMidi = false;
+let midiOutput;
 
 DocumentType= module;
 
@@ -8,7 +8,7 @@ module.exports = {
     deactivateMidiAction,
     printDebugInfo,
     startMidiOutput,
-    handleHttpAction,
+    handleAction,
     killMidiOutput
 }
 /**
@@ -30,14 +30,16 @@ function deactivateMidiAction(state){
  * the printed text, which will be shown on the command prompt
  * @param  {string} state
  * the parameter to select the right color
+ * @param  {string} origin
+ * the parameter to define the origin of the info
  */
-function printDebugInfo(text, state){
+function printDebugInfo(text, state, origin){
     switch(state){
-        case 's1': console.log('\x1b[34m', `http2s1: ${text}`); break;
-        case 'presenter': console.log('\x1b[32m', `http2presenter: ${text}`); break;
+        case 's1': console.log('\x1b[34m', `${origin}2s1: ${text}`); break;
+        case 'presenter': console.log('\x1b[32m', `${origin}2presenter: ${text}`); break;
         case 'info': console.log('\x1b[37m', `Info: ${text}`); break;
-        default: 
-            console.log('\x1b[31m', `Èrror: Command not found!:`);
+        case 'error':
+            console.log('\x1b[31m', `Error: Command not found!:`);
             console.log('\x1b[37m', text);
             break;
     }
@@ -45,7 +47,7 @@ function printDebugInfo(text, state){
 
 function startMidiOutput(){
     if(deactivateMidi == false){
-        let midiOutput = new midi.Output('QUAD-CAPTURE');
+        midiOutput = new midi.Output('QUAD-CAPTURE');
     }
 }
 function killMidiOutput(){
@@ -55,61 +57,62 @@ function killMidiOutput(){
 }
 /**
  * Toggle the corresponding action to the input action in the querystring
- * @param  {object} url
- * URL of the HTTP GET-Request
+ * @param  {string} action
+ * Action of the Request
+ * @param  {string} origin
+ * Origin of the Request
  */
-function handleHttpAction (url){
-    let action = url_parse(url, true).query.action;
+function handleAction (action, origin){ 
     switch (action){
         case 'startRec': 
-            printDebugInfo('Recording will be started', 's1'); 
+            printDebugInfo('Recording will be started', 's1', origin); 
             sendMidiStudio(85);
             break;
         case 'stopRec': 
-            printDebugInfo('Recording will be stopped', 's1');
+            printDebugInfo('Recording will be stopped', 's1', origin);
             sendMidiStudio(86);
             break;
         case 'setMarker':
-            printDebugInfo('Marker will be set', 's1');
+            printDebugInfo('Marker will be set', 's1', origin);
             sendMidiStudio(87);
             break;
 	    case 'setEndMarker': 
-            printDebugInfo('Markers will be set correctly to recording length', 's1');
+            printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
             sendMidiStudio(90);
             break;
         case 'normalize':
-            printDebugInfo('Normalizing Effect will be started', 's1');
+            printDebugInfo('Normalizing Effect will be started', 's1', origin);
             sendMidiStudio(88);
             break;
         case 'exportAudio': 
-            printDebugInfo('Exporting Process will be started', 's1');
+            printDebugInfo('Exporting Process will be started', 's1', origin);
             sendMidiStudio(89);
             break;
         case 'changeItem': 
-            printDebugInfo('Item Selection will be changed', 'presenter');
+            printDebugInfo('Item Selection will be changed', 'presenter', origin);
             sendMidiPresenter(0);
             break;
         case 'prevItem': 
-            printDebugInfo('Prevoius Item will be executed', 'presenter');
+            printDebugInfo('Prevoius Item will be executed', 'presenter', origin);
             sendMidiPresenter(2);
             break;
         case 'nextItem': 
-            printDebugInfo('Next Item will be executed', 'presenter');
+            printDebugInfo('Next Item will be executed', 'presenter', origin);
             sendMidiPresenter(3);
             break;
         case 'changeSlide': 
-            printDebugInfo('Slide Selection will be changed', 'presenter');
+            printDebugInfo('Slide Selection will be changed', 'presenter', origin);
             sendMidiPresenter(4);
             break;
         case 'prevSlide': 
-            printDebugInfo('Prevoius Slide will be executed', 'presenter');
+            printDebugInfo('Prevoius Slide will be executed', 'presenter', origin);
             sendMidiPresenter(5);
             break;
         case 'nextSlide': 
-            printDebugInfo('Next Slide will be executed', 'presenter');
+            printDebugInfo('Next Slide will be executed', 'presenter', origin);
             sendMidiPresenter(6);
             break;
-        default: console.log('Action not detected! Error!'); break;     
+        default: printDebugInfo('Action not detected! Error!', 'error', 'local'); break;     
     }
 }
 /**
@@ -132,7 +135,6 @@ function sendMidiStudio(cc){
             })
         }, 200);
     }
-    
 }
 /**
  * Sending NoteOn Commands on MIDI-Channel 2
