@@ -1,7 +1,7 @@
 {
   "name": "http2midi",
   "version": "1.0.0",
-  "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI CC-Commands to control basic functionality of Studio One 5 Prime by Presonus",
+  "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI CC-Commands",
   "main": "index.js",
   "scripts": {
     "startup": "node index.js",
