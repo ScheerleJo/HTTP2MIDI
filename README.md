@@ -27,6 +27,11 @@ velocity: 0-127
 - I am currently researching to implement a feedback function, which should tell you if the recording is runnig and how many track marker you have set.
 - Complete the in construction Debug-Helper to test the functions and get callbacks correctly.
 
+### TODOs:
+-   create callback functions to Debug-Helper
+    -   Rec-Status
+    -   Marker-Count
+-   create script for connecting midi2presenter
 
 ## Developer
 

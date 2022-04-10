@@ -1,4 +1,6 @@
 const midi = require('easymidi');
+const url_parse = require('url-parse');
+const path = require('path');
 let deactivateMidi = false;
 let midiOutput;
 
@@ -9,7 +11,8 @@ module.exports = {
     printDebugInfo,
     startMidiOutput,
     handleAction,
-    killMidiOutput
+    killMidiOutput,
+    debugPath
 }
 /**
  * function to deactivate the MIDI-Output sequence.
@@ -57,12 +60,14 @@ function killMidiOutput(){
 }
 /**
  * Toggle the corresponding action to the input action in the querystring
- * @param  {string} action
+ * @param  {object} url
  * Action of the Request
  * @param  {string} origin
  * Origin of the Request
  */
-function handleAction (action, origin){ 
+function handleAction (url, origin){ 
+    let action = url_parse(url, true).query.action;
+
     switch (action){
         case 'startRec': 
             printDebugInfo('Recording will be started', 's1', origin); 
@@ -114,6 +119,7 @@ function handleAction (action, origin){
             break;
         default: printDebugInfo('Action not detected! Error!', 'error', 'local'); break;     
     }
+    return `Latest Action: ${action}`;
 }
 /**
  * Sending ControlChange Commands on MIDI-Channel 1
@@ -149,4 +155,8 @@ function sendMidiPresenter(note){
             channel: 2
         });
     }
+}
+
+function debugPath(){
+    return path.join(__dirname + '/views/debug-helper.html');
 }

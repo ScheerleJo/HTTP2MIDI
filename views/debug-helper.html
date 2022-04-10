@@ -10,64 +10,64 @@
 <body>
 <div class="container" id="s1-container">
     <div class="container-head">
-        <img id="s1" src="/Debug/images/Studio One.png">
+        <img id="s1" src="/Studio_One.png">
         <h2>Presonus Studio One</h2>
     </div>
     <div class="container-body">
         <div class="container-event">
-            <button id="StartRec">start Rec</button>
+            <button id="StartRec" onclick="sendAction('startRec')">start Rec</button>
             <textarea>start the Recording</textarea>
         </div>
         <div class="container-event">
-            <button id="StopRec">stop Rec</button>
+            <button id="StopRec" onclick="sendAction('stopRec')">stop Rec</button>
             <textarea>stop the current Recording</textarea>
         </div>
         <div class="container-event">
-            <button id="SetMarker">set Marker</button>
+            <button id="SetMarker" onclick="sendAction('setMarker')">set Marker</button>
             <textarea>set a Maker at  the current position</textarea>
         </div>
         <div class="container-event">
-            <button id="SelectAudio">set Marker to Selection</button>
+            <button id="SelectAudio" onclick="sendAction('setEndMarker')">set Marker to Selection</button>
             <textarea>set the Start and End Maker to selection</textarea>
         </div>
         <div class="container-event">
-            <button id="NormalizeAudio">normalize Audio</button>
+            <button id="NormalizeAudio" onclick="sendAction('normalize')">normalize Audio</button>
             <textarea>normalize Audio on the current selected Clip</textarea>
         </div>
         <div class="container-event">
-            <button id="ExportAudio">export Audio</button>
+            <button id="ExportAudio" onclick="sendAction('exportAudio')">export Audio</button>
             <textarea>export the Audio</textarea>
         </div>
     </div>
 </div>
 <div class="container" id="presenter-container">
     <div class="container-head">
-        <img id="s1" src="/Debug/images/Presenter.png">
+        <img id="s1" src="/Presenter.png">
         <h2>Worship Extreme: Presenter</h2>
     </div>
     <div class="container-body">
         <div class="container-event">
-            <button id="setFirstItem">to first Item</button>
+            <button id="setFirstItem" onclick="sendAction('changeItem')">to first Item</button>
             <textarea>change Presentation to the first item in the list of this service</textarea>
         </div>
         <div class="container-event">
-            <button id="prevItem">previous Item</button>
+            <button id="prevItem" onclick="sendAction('prevItem')">previous Item</button>
             <textarea>change Presentation to previous Item</textarea>
         </div>
         <div class="container-event">
-            <button id="nextItem">next Item</button>
+            <button id="nextItem" onclick="sendAction('nextItem')">next Item</button>
             <textarea>change Presentation to next Item</textarea>
         </div>
         <div class="container-event">
-            <button id="setFirstSlide">to first Slide</button>
+            <button id="setFirstSlide" onclick="sendAction('changeSlide')">to first Slide</button>
             <textarea>change Presentation to the first slide in the currently selected Item</textarea>
         </div>
         <div class="container-event">
-            <button id="prevSlide">previous Slide</button>
+            <button id="prevSlide" onclick="sendAction('prevSlide')">previous Slide</button>
             <textarea>change Presentation to previous Slide</textarea>
         </div>
         <div class="container-event">
-            <button id="nextSlide">next Slide</button>
+            <button id="nextSlide" onclick="sendAction('nextSlide')">next Slide</button>
             <textarea>change Presentation to next Slide</textarea>
         </div>
     </div>
@@ -77,7 +77,7 @@
         <h2>Callback & Status</h2>
     </div>
     <div class="container-body">
-        <div class="container-event">
+        <!-- <div class="container-event">
             <div class="radio">
                 <input type="radio" name="switch" id="local" value="local" checked>
                 <label for="local">Call Functions Locally</label>
@@ -86,17 +86,33 @@
                 <input type="radio" name="switch" id="http" value="http">
                 <label for="http">Call Functions via HTTP</label>
             </div>
-        </div>
+        </div> -->
         <div class="container-event">
             <h3>Response</h3>
             <textarea id="response"></textarea>
         </div>
         <div class="container-event">
-            <button id="killServer">kill Webserver</button>
+            <button id="killServer" onclick="sendAction('kill')">kill Webserver</button>
         </div>
     </div>
 </div>
-<script src="./debug-helper.js"></script>
+<script>
+    /**
+     * @param  {string} action
+     */
+    function sendAction(action){
+        let url = 'http://localhost:8010/';
+        if(action == 'kill'){
+            url += action;
+        } else {
+            url += `send?action=${action}`;
+        }
+        fetch(url).then(response => response.text())
+            .then(text => {
+                document.getElementById('response').value = text;
+            });
+    }
+</script>
 
 </body>
 </html>

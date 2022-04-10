@@ -19,9 +19,9 @@
   "author": "Josia Scheerle",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "easymidi": "^2.1.0",
-    "express": "^4.17.2",
-    "fs": "^0.0.1-security",
+    "express": "^4.17.3",
     "midi": "^2.0.0",
     "nodemon": "^2.0.15",
     "url-parse": "^1.5.4"

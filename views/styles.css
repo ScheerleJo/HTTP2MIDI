@@ -67,6 +67,8 @@ textarea {
     background: rgb(83, 83, 83);
     display: inline-block;
     resize: none;
+    border: rgb(56, 56, 56) 1px solid;
+    border-radius: 3px;
 }
 #response {
     position: relative;
