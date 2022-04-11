@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Debugger</title>
+    <link rel="icon" href="/Logo.png">
+    <title>http2midi - Debug-Helper</title>
 </head>
 <body onload="loadCurrentStatus()">
 <div class="container" id="s1-container">
@@ -122,9 +123,10 @@
         } else {
             url += `send?action=${action}`;
         }
-        fetch(url).then(response => response.json()).then(jsondata => {
-            parseDataToElements(jsondata);
-        });
+        fetch(url).then(response => response.json()).then(text => console.log(text));
+        setTimeout(() => {
+            loadCurrentStatus();
+        }, 100);
     }
     function loadCurrentStatus(){
         // alert('body loaded');

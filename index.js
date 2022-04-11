@@ -23,24 +23,23 @@ lib.startMidiOutput();              //start MIDI-Output, when 'deactivateMIDI' i
 
 app.use(cors(corsOptions));
 app.use(express.static(__dirname + '/views'));
-app.use(express.static(__dirname + '/views/images'))
+app.use(express.static(__dirname + '/views/images'));
 
 app.get('/', (req, res) =>{
     res.sendFile(lib.debugPath());
     lib.writeToJSONfile();
-    lib.printDebugInfo('The Localhost Debug-Helper has been accessed','info', 'local')
-    // res.json(lib.returnJSONdata());
+    lib.printDebugInfo('The Localhost Debug-Helper has been accessed','info', 'local');
 });
 
 app.get('/kill', (req, res) => {    //shuts down the Webserver gracefully
                                     //querystring cannot be used differently
-    lib.setLatestAction('kill');
-    res.json(lib.resetJSONobject());
+    res.json({'status':'Shutdown'});
+    lib.resetJSONobject();
     lib.printDebugInfo('Application will shut down', 'info')
     lib.killMidiOutput();
     process.exit();
 });
-app.get('/send', (req, res) => {    // /send is used to handle the function-calling process 
+app.get('/send', (req, res) => {    // /send is used to handle the function-calling process
     res.json(lib.handleAction(req.url, 'http'));
 });
 

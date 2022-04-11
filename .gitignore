@@ -1,6 +1,2 @@
 node_modules/
-.vscode
-exportAudio.ahk
-companion-module-malighting-grandma2/
-companion-module-generic-http/
-Virtual_MIDI/
+http2midi_export.ahk
