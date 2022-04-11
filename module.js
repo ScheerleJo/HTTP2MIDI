@@ -17,7 +17,10 @@ module.exports = {
     handleAction,
     killMidiOutput,
     debugPath,
-    writeToJSONfile
+    writeToJSONfile,
+    resetJSONobject,
+    setLatestAction,
+    returnJSONdata
 }
 /**
  * function to deactivate the MIDI-Output sequence.
@@ -199,6 +202,10 @@ function sendMidiPresenter(note){
 function debugPath(){
     return path.join(__dirname + '/views/debug-helper.html');
 }
+
+function setLatestAction(action){
+    latestAction = action;
+}
 /**
  * Return JSON-Data for handling frontend Logic
  * @param  {string} action
@@ -207,11 +214,16 @@ function debugPath(){
 function returnJSONdata(){
     return { 'recStatus': rec, 'markerCount': marker, 'latestAction': latestAction };
 }
+function resetJSONobject(){
+    rec = false;
+    marker = 0;
+    latestAction = 0;
+    return returnJSONdata();
+}
 /**
  * Write the JSON-Object from the 'returnJSONdata' method to the 'latestInfo.json' file.
  */
 function writeToJSONfile(){
-    console.log(returnJSONdata());
     var jsonContent = JSON.stringify(returnJSONdata());
     fs.writeFile("./views/latestInfo.json", jsonContent, 'utf8', function (err) {
         if (err) {

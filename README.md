@@ -26,9 +26,9 @@ velocity: 0-127
 - Also an automation for exporting the recorded audio into mp3 files with the press of a button would be pretty nice. :smile:
 - I am currently researching to implement a feedback function, which should tell you if the recording is runnig and how many track marker you have set.
 - Complete the in construction Debug-Helper to test the functions and get callbacks correctly.
+- create script for connecting midi2presenter
 
 ### TODOs:s
--   create script for connecting midi2presenter
 
 ## Developer
 

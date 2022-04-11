@@ -44,6 +44,7 @@ button:active {
 }
 .container-event {
     margin: 5px;
+    /* padding:5px; */
     border: rgb(25, 25, 25) 1px solid;
     display: block;
     background: rgb(70, 70, 70);
@@ -73,7 +74,7 @@ textarea {
 }
 #response {
     position: relative;
-    width: 89%;
+    width: 91%;
     height: 75px;
     margin-top: 0px;
 }
@@ -105,4 +106,7 @@ tr {
 }
 .status-stopped {
     border: rgb(0, 200, 0) 2px solid;
+}
+#markerCount {
+    margin-bottom: 7px;
 }

@@ -92,6 +92,7 @@
             <textarea id="response"></textarea>
         </div>
         <div class="container-event">
+            <h3>Studio One Feedback</h3>
             <table>
                 <tr>
                     <td><div class="status">Rec Status:</div></td>
@@ -133,22 +134,36 @@
     }
 
     function parseDataToElements(data){
-        document.getElementById('response').value = `Latest Action: ${data.latestAction}`;
-            document.getElementById('markerCount').value = data.markerCount;
-            if(data.recStatus == true) {
-                recStatus.classList.add('status-active');
-                if(recStatus.classList.contains('status-stopped') == true){
-                    recStatus.classList.remove('status-stopped');
-                }
-                recStatus.value = 'Recording!';
+        document.getElementById('markerCount').value = data.markerCount;
+        if(data.recStatus == true) {
+            recStatus.classList.add('status-active');
+            if(recStatus.classList.contains('status-stopped') == true){
+                recStatus.classList.remove('status-stopped');
             }
-            else {
-                recStatus.classList.add('status-stopped');
-                if(recStatus.classList.contains('status-active') == true){
-                    recStatus.classList.remove('status-active');
-                }
-                recStatus.value = "Stopped!"
+            recStatus.value = 'Recording!';
+        }
+        else {
+            recStatus.classList.add('status-stopped');
+            if(recStatus.classList.contains('status-active') == true){
+                recStatus.classList.remove('status-active');
             }
+            recStatus.value = "Stopped!"
+        }
+        if(data.latestAction == ''){
+            document.getElementById('response').value = '';
+            recStatus.value = '';
+            if (recStatus.classList.contains('status-stopped') == true){
+                recStatus.classList.remove('status-stopped');
+            }            
+            if (recStatus.classList.contains('status-active') == true){
+                recStatus.classList.remove('status-active');
+            }
+        } else if (data.latestAction == 'kill') {
+            document.getElementById('response').value = 'Info: Application will shut down!'
+        }
+        else {
+            document.getElementById('response').value = `Latest Action: ${data.latestAction}`;
+        }
     }
 </script>
 
