@@ -1,8 +1,12 @@
 const midi = require('easymidi');
 const url_parse = require('url-parse');
 const path = require('path');
+const fs = require('fs');
 let deactivateMidi = false;
 let midiOutput;
+let rec = false;
+let marker = 0;
+let latestAction = '';
 
 DocumentType= module;
 
@@ -12,7 +16,8 @@ module.exports = {
     startMidiOutput,
     handleAction,
     killMidiOutput,
-    debugPath
+    debugPath,
+    writeToJSONfile
 }
 /**
  * function to deactivate the MIDI-Output sequence.
@@ -41,10 +46,8 @@ function printDebugInfo(text, state, origin){
         case 's1': console.log('\x1b[34m', `${origin}2s1: ${text}`); break;
         case 'presenter': console.log('\x1b[32m', `${origin}2presenter: ${text}`); break;
         case 'info': console.log('\x1b[37m', `Info: ${text}`); break;
-        case 'error':
-            console.log('\x1b[31m', `Error: Command not found!:`);
-            console.log('\x1b[37m', text);
-            break;
+        case 'warning': console.log('\x1b[33m', `Warning: ${text}`); break;
+        case 'error': console.log('\x1b[37m', `Error: ${text}`); break;
     }
 }
 
@@ -70,28 +73,62 @@ function handleAction (url, origin){
 
     switch (action){
         case 'startRec': 
-            printDebugInfo('Recording will be started', 's1', origin); 
-            sendMidiStudio(85);
+            if(rec == false){
+                printDebugInfo('Recording will be started', 's1', origin); 
+                sendMidiStudio(85);
+                rec = true;
+                marker = 0;
+            }
+            else {
+                printDebugInfo('There is currently an active recoring', 'warning', 'Warning');
+            }
             break;
         case 'stopRec': 
-            printDebugInfo('Recording will be stopped', 's1', origin);
-            sendMidiStudio(86);
+            if(rec == true){
+                printDebugInfo('Recording will be stopped', 's1', origin);
+                sendMidiStudio(86);
+                rec = false;
+            }
+            else {
+                printDebugInfo('There is no active recoring that can be stopped', 'warning', 'Warning');
+            }
             break;
         case 'setMarker':
-            printDebugInfo('Marker will be set', 's1', origin);
-            sendMidiStudio(87);
+            if(rec == true){
+                printDebugInfo('Marker will be set', 's1', origin);
+                sendMidiStudio(87);
+                marker++;
+            }
+            else {
+                printDebugInfo('There is currently no active recording', 'warning', 'Warning');
+            }
             break;
-	    case 'setEndMarker': 
-            printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
-            sendMidiStudio(90);
+            case 'setEndMarker': 
+            if(rec == false){
+                printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
+                sendMidiStudio(90);
+            }
+            else {
+                printDebugInfo('There is currently no active recording', 'warning', 'Warning');
+            }
             break;
         case 'normalize':
-            printDebugInfo('Normalizing Effect will be started', 's1', origin);
-            sendMidiStudio(88);
+            if(rec == false){
+                printDebugInfo('Normalizing Effect will be started', 's1', origin);
+                sendMidiStudio(88);
+            }
+            else {
+                printDebugInfo('There is currently no active recording', 'warning', 'Warning');
+            }
             break;
-        case 'exportAudio': 
-            printDebugInfo('Exporting Process will be started', 's1', origin);
-            sendMidiStudio(89);
+        case 'exportAudio':
+            if(rec == false) {
+                printDebugInfo('Exporting Process will be started', 's1', origin);
+                sendMidiStudio(89);
+            }
+            else {
+                printDebugInfo('There is currently no active recording', 'warning', 'Warning');
+            }
             break;
         case 'changeItem': 
             printDebugInfo('Item Selection will be changed', 'presenter', origin);
@@ -119,7 +156,9 @@ function handleAction (url, origin){
             break;
         default: printDebugInfo('Action not detected! Error!', 'error', 'local'); break;     
     }
-    return `Latest Action: ${action}`;
+    latestAction = action;
+    
+    return returnJSONdata();
 }
 /**
  * Sending ControlChange Commands on MIDI-Channel 1
@@ -159,4 +198,24 @@ function sendMidiPresenter(note){
 
 function debugPath(){
     return path.join(__dirname + '/views/debug-helper.html');
+}
+/**
+ * Return JSON-Data for handling frontend Logic
+ * @param  {string} action
+ * latestAction parameter 
+ */
+function returnJSONdata(){
+    return { 'recStatus': rec, 'markerCount': marker, 'latestAction': latestAction };
+}
+/**
+ * Write the JSON-Object from the 'returnJSONdata' method to the 'latestInfo.json' file.
+ */
+function writeToJSONfile(){
+    console.log(returnJSONdata());
+    var jsonContent = JSON.stringify(returnJSONdata());
+    fs.writeFile("./views/latestInfo.json", jsonContent, 'utf8', function (err) {
+        if (err) {
+            printDebugInfo(`An error occured while writing JSON Object to File.\n${err}`, '', 'Error!');
+        }
+    });
 }

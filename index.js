@@ -1,7 +1,7 @@
 // This Webserver, written by ScheerleJo aka. Josia Scheerle,  makes it possible to accept HTTP-Requests and output MIDI
 // It is used to control various programs with MIDI like StudioOne and Presenter
 // first edit: 08.02.2022
-// latest edit: 10.04.2022
+// latest edit: 11.04.2022
 
 const PORT = 8010;
 const lib = require('./module');
@@ -27,6 +27,9 @@ app.use(express.static(__dirname + '/views/images'))
 
 app.get('/', (req, res) =>{
     res.sendFile(lib.debugPath());
+    lib.writeToJSONfile();
+    lib.printDebugInfo('The Localhost Debug-Helper has been accessed','info', 'local')
+    // res.json(lib.returnJSONdata());
 });
 
 app.get('/kill', (req, res) => {    //shuts down the Webserver gracefully
@@ -37,7 +40,7 @@ app.get('/kill', (req, res) => {    //shuts down the Webserver gracefully
     process.exit();
 });
 app.get('/send', (req, res) => {    // /send is used to handle the function-calling process 
-    res.send(lib.handleAction(req.url, 'http'));
+    res.json(lib.handleAction(req.url, 'http'));
 });
 
 app.listen(PORT, function(){        //builds the Webserver

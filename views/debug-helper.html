@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <title>Debugger</title>
 </head>
-<body>
+<body onload="loadCurrentStatus()">
 <div class="container" id="s1-container">
     <div class="container-head">
         <img id="s1" src="/Studio_One.png">
@@ -92,25 +92,63 @@
             <textarea id="response"></textarea>
         </div>
         <div class="container-event">
+            <table>
+                <tr>
+                    <td><div class="status">Rec Status:</div></td>
+                    <td><input id="recStatus" type="text" class="status-text"></td>
+                </tr>
+                <tr>
+                    <td><div class="status">Marker Count:</div></td>
+                    <td><input id="markerCount" type="text" class="status-text"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="container-event">
             <button id="killServer" onclick="sendAction('kill')">kill Webserver</button>
         </div>
     </div>
 </div>
 <script>
+    var recStatus = document.getElementById('recStatus');
+    var markerCount = document.getElementById('markerCount');
     /**
      * @param  {string} action
      */
     function sendAction(action){
         let url = 'http://localhost:8010/';
-        if(action == 'kill'){
+        if(action == 'kill') {
             url += action;
         } else {
             url += `send?action=${action}`;
         }
-        fetch(url).then(response => response.text())
-            .then(text => {
-                document.getElementById('response').value = text;
-            });
+        fetch(url).then(response => response.json()).then(jsondata => {
+            parseDataToElements(jsondata);
+        });
+    }
+    function loadCurrentStatus(){
+        // alert('body loaded');
+        fetch('./latestInfo.json').then(response => response.json()).then(jsondata => {
+            parseDataToElements(jsondata)
+        });
+    }
+
+    function parseDataToElements(data){
+        document.getElementById('response').value = `Latest Action: ${data.latestAction}`;
+            document.getElementById('markerCount').value = data.markerCount;
+            if(data.recStatus == true) {
+                recStatus.classList.add('status-active');
+                if(recStatus.classList.contains('status-stopped') == true){
+                    recStatus.classList.remove('status-stopped');
+                }
+                recStatus.value = 'Recording!';
+            }
+            else {
+                recStatus.classList.add('status-stopped');
+                if(recStatus.classList.contains('status-active') == true){
+                    recStatus.classList.remove('status-active');
+                }
+                recStatus.value = "Stopped!"
+            }
     }
 </script>
 

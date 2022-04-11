@@ -47,6 +47,7 @@ button:active {
     border: rgb(25, 25, 25) 1px solid;
     display: block;
     background: rgb(70, 70, 70);
+    position: relative;
 }
 h2 {
     padding-bottom: 10px;
@@ -82,4 +83,26 @@ textarea {
 }
 h3 {
     margin: 5px 10px 0px 10px;
+}
+.status-text {
+    background: rgb(83, 83, 83);
+    resize: none;
+    border: rgb(56, 56, 56) 1px solid;
+    border-radius: 3px;
+    height: 25px;
+    position: relative;
+    margin-right: 5px;
+}
+.status {
+    display: block;
+    margin-left: 5px;
+}
+tr {
+    margin: 10px 0;
+}
+.status-active {
+    border: rgb(200, 0, 0) 2px solid;
+}
+.status-stopped {
+    border: rgb(0, 200, 0) 2px solid;
 }
