@@ -1,7 +1,7 @@
 // This Webserver, written by ScheerleJo aka. Josia Scheerle,  makes it possible to accept HTTP-Requests and output MIDI
 // It is used to control various programs with MIDI like StudioOne and Presenter
 // first edit: 08.02.2022
-// latest edit: 11.04.2022
+// latest edit: 12.04.2022
 
 const PORT = 8010;
 const lib = require('./module');
@@ -19,7 +19,6 @@ lib.deactivateMidiAction(true);     //determines whether the MIDI-Output is actu
 
 lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\n Trying to start the server...\n', 'info', 'local');
 lib.startMidiOutput();              //start MIDI-Output, when 'deactivateMIDI' is false
-
 
 app.use(cors(corsOptions));
 app.use(express.static(__dirname + '/views'));

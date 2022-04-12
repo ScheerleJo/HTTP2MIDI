@@ -57,14 +57,10 @@ function printDebugInfo(text, state, origin){
 }
 
 function startMidiOutput(){
-    if(deactivateMidi == false){
-        midiOutput = new midi.Output('QUAD-CAPTURE');
-    }
+    if(deactivateMidi == false){ midiOutput = new midi.Output('QUAD-CAPTURE'); }
 }
 function killMidiOutput(){
-    if(deactivateMidi == false) {
-        midiOutput.close();
-    }
+    if(deactivateMidi == false) { midiOutput.close(); }
 }
 
 /**
@@ -74,13 +70,13 @@ function killMidiOutput(){
  * @param  {string} origin
  * Origin of the Request
  */
-function handleAction (url, origin){ 
+function handleAction (url, origin){
     let ret = '';
     let action = url_parse(url, true).query.action;
     switch (action){
-        case 'startRec': 
+        case 'startRec':
             if(rec == false){
-                printDebugInfo('Recording will be started', 's1', origin); 
+                printDebugInfo('Recording will be started', 's1', origin);
                 sendMidiStudio(85);
                 rec = true;
                 marker = 0;
@@ -145,7 +141,7 @@ function handleAction (url, origin){
             printDebugInfo('Next Slide will be executed', 'presenter', origin);
             sendMidiPresenter(6);
             break;
-        default: printDebugInfo('Action not detected! Error!', 'error', 'local'); break;     
+        default: printDebugInfo('Action not detected! Error!', 'error', 'local'); break;
     }
     latestAction = action;
     writeToJSONfile();

@@ -28,10 +28,11 @@ button:active {
 }
 
 .container {
-    background: rgb(54, 54, 54);
-    border:rgb(25, 25, 25) 2px dashed;
+    background: rgb(50, 50, 50);
+    border:rgb(80, 80, 80) 2px dashed;
     display: inline-table;
     margin: 10px;
+    box-shadow: 7px 7px 15px 3px rgba(0, 0, 0, 0.2);
 }
 .container-head {
     height: 50px;
