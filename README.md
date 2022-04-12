@@ -13,16 +13,20 @@ The already mentioned concept is, that the Webserver gets an HTTP-Request lookin
 http://localhost:8004/send/?action=*myaction*
 ```
 The Webserver then outputs a normal MIDI-CC-Signal `CC = Controll-Change` looking something like that but in hex for Studio One:
-```JSON
-channel: 1,
-controller: 0-127,
-velocity: 0-127
+``` AHK
+{
+  channel: 1,
+  controller: 0-127,
+  velocity: 0-127
+}
 ```
 and the following sample for Presenter:
-```JSON
-note: 1-6,
-value: 127,
-channel: 2
+```AHK
+{
+  note: 1-6,
+  value: 127,
+  channel: 2
+}
 ```
 
 ## Future Plans
