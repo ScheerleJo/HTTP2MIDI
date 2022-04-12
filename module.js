@@ -2,9 +2,11 @@ const midi = require('easymidi');
 const url_parse = require('url-parse');
 const path = require('path');
 const fs = require('fs');
+const exec = require('child_process').execFile;
 
 let midiOutput;
 let deactivateMidi = false;
+let autoExport = false;
 let rec = false;
 let marker = 0;
 let latestAction = '';
@@ -13,6 +15,7 @@ DocumentType= module;
 
 module.exports = {
     deactivateMidiAction,
+    deactivateAutoExport,
     printDebugInfo,
     startMidiOutput,
     handleAction,
@@ -20,7 +23,22 @@ module.exports = {
     debugPath,
     writeToJSONfile,
     resetJSONobject,
-    returnJSONdata
+    returnJSONdata,
+    callPresenterStartup
+}
+
+/**
+ * Function to bind the MIDI-Input to Presenter.
+ * Due to some bullshit, the MIDI-connection is lost every single time, when you open Presenter.
+ */
+function callPresenterStartup() {
+    exec('./scripts/midi2presenter_startup.exe');  
+}
+/**
+ * function to call the AutoExportScript.
+ */
+function callS1Export() {
+    exec('.scripts/midi2s1_export.exe');
 }
 
 /**
@@ -29,11 +47,23 @@ module.exports = {
  * @param  {boolean} state
  */
 function deactivateMidiAction(state){
-    if(state== true){
-        deactivateMidi = true;
+    if(state== true){ 
+        deactivateMidi = true; 
+    } else { 
+        deactivateMidi = false; 
     }
-    else {
-        deactivateMidi = false;
+}
+
+/**
+ * function to activate the Auto-Export sequence for Studio.
+ * Currently in testing -> useful to activate and deactivate it.
+ * @param  {boolean} state
+ */
+function deactivateAutoExport(state){
+    if(state== true){ 
+        autoExport = false; 
+    } else { 
+        autoExport = true; 
     }
 }
 
@@ -115,6 +145,7 @@ function handleAction (url, origin){
             if(rec == false) {
                 printDebugInfo('Exporting Process will be started', 's1', origin);
                 sendMidiStudio(89);
+                callS1Export();
             } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
             break;
         case 'changeItem': 
@@ -147,6 +178,7 @@ function handleAction (url, origin){
     writeToJSONfile();
     return ret;
 }
+//#region Send MIDI-Commands
 
 /**
  * Sending ControlChange Commands on MIDI-Channel 1
@@ -184,6 +216,9 @@ function sendMidiPresenter(note){
         });
     }
 }
+//#endregion
+
+//#region Various Functions, needed for the Debug-Helper
 
 function debugPath(){
     return path.join(__dirname + '/views/debug-helper.html');
@@ -214,3 +249,4 @@ function writeToJSONfile(){
         if (err) { printDebugInfo(`An error occured while writing JSON Object to File.\n${err}`, '', 'Error!'); }
     });
 }
+//#endregion

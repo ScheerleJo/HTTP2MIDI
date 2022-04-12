@@ -1,8 +1,9 @@
 #SingleInstance, force
 
-
+MsgBox, Hello World
 sleep 1000
-BlockInput MouseMove
+; BlockInput MouseMove
+
 ;if Presenter is open
 ; goto settings
 ; goto MIDI-settings

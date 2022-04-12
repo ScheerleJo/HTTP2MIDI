@@ -29,12 +29,19 @@ and the following sample for Presenter:
 }
 ```
 
-## Future Plans
+## Future Plans /ToDos
 - In the future it is planned to keep this script updated and eventually move the physical MIDI-Output to a virtual Port. This may be accomplished with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtualMidi applications.
 
-- Also an automation for exporting the recorded audio into mp3 files with the press of a button would be pretty nice. :smile:
+- Update ReadMe to warn about config.json
 
-- create script for connecting midi2presenter
+#### AutoHotkey
+- program AutoExport script
+- program script for connecting midi2presenter
+#### Debug-Helper
+- create more Status indications (deactivateMidi, deactivateAutoExport, MidiOutput)
+- make the config accessable trough json file to be configured in html and in the json
+- maybe restart the debug-helper?
+
 
 ## Developer
 
