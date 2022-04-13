@@ -2,25 +2,23 @@ DocumentType= module;
 
 const midi = require('easymidi');
 const url_parse = require('url-parse');
-const fs = require('fs');
 const exec = require('child_process').execFile;
 
 var midiOutput;
 
 let deactivateMidi = false;
-var autoExport = false;
+let autoExport = false;
 let bindPresenter = false;
 let rec = false;
 let marker = 0;
 let latestAction = '';
+let midiName = '';
 
 module.exports = {
     loadConfig,
     printDebugInfo,
     handleAction,
-    killMidiOutput,
-    writeToJSONfile,
-    resetJSONobject
+    killMidiOutput
 }
 
 /**
@@ -40,46 +38,47 @@ function callS1Export() {
  * Load the Config file and parse the fetched information.
  * Handling Midi-Output and AutoExport.
  * Useful, when programming and testing!
+ * @param {object} config
+ * parse the config-data from the index
  */
-async function loadConfig(){
-    await fs.readFile('./config.json', (error, data) => {
-        if(error) throw error;
-        const config = JSON.parse(data);
-        if(config.deactivateMidi == true){
-            deactivateMidi = true;
-            printDebugInfo('MIDI-Output is disabled. Check config.json to activate!', 'warning');
-        } else {
-            deactivateMidi = false;
-            midiOutput = new midi.Output(config.MidiOutput);
-            printDebugInfo(`MIDI-Output is open on: ${config.midiOutput}` , 'info');
-        }
-        let exportState = 'AutoExport for Studio one is';
-        if(config.deactivateAutoExport == true){
-            autoExport = false;
-            printDebugInfo(`${exportState} OFF. Check config.json to activate!`, 'warning');
-        } else {
-            autoExport = true;
-            printDebugInfo(`${exportState} ON`, 'info');
-        }
-    });
+function loadConfig(config){
+    if(config.deactivateMidi == true){
+        deactivateMidi = true;
+        printDebugInfo('MIDI-Output is disabled. Check config.json to activate!', 'warning');
+    } else {
+        deactivateMidi = false;
+        midiOutput = new midi.Output(config.midiOutput);
+        printDebugInfo(`MIDI-Output is open on: ${config.midiOutput}` , 'info');
+    }
+    let exportState = 'AutoExport for Studio one is';
+    if(config.deactivateAutoExport == true){
+        autoExport = false;
+        printDebugInfo(`${exportState} OFF. Check config.json to activate!`, 'warning');
+    } else {
+        autoExport = true;
+        printDebugInfo(`${exportState} ON`, 'info');
+    }
+    midiName = config.midiOutput
 }
 
 /**
  * A function to print debugging info in different colors depending on the type of info
  * @param  {string} text 
- * the printed text, which will be shown on the command prompt
+ * text, which will be shown on the command prompt
  * @param  {string} state
- * the parameter to select the right color
+ * selects the right color
  * @param  {string} origin
- * the parameter to define the origin of the info
+ * defines the origin of the info
  */
 function printDebugInfo(text, state, origin){
     switch(state){
-        case 's1': console.log('\x1b[34m', `${origin}2s1: ${text}`); break;
-        case 'presenter': console.log('\x1b[32m', `${origin}2presenter: ${text}`); break;
-        case 'info': console.log('\x1b[37m', `Info: ${text}`); break;
-        case 'warning': console.log('\x1b[33m', `Warning: ${text}`); break;
-        case 'error': console.log('\x1b[37m', `Error: ${text}`); break;
+        case 's1': console.log('\x1b[34m', `${origin}2s1: ${text}`); break;                 // Blue
+        case 'presenter': console.log('\x1b[32m', `${origin}2presenter: ${text}`); break;   // Green
+
+        case 'info': console.log('\x1b[37m', `Info: ${text}`); break;                       // White
+        case 'warning': console.log('\x1b[33m', `Warning: ${text}`); break;                 // Orange
+        case 'error': console.log('\x1b[31m', `Error: ${text}`); break;                     // Red
+        case 'debug': console.log('\x1b[35m', `Debug: ${text}`); break;                     // Purple
     }
 }
 
@@ -105,7 +104,7 @@ function handleAction (url, origin){
                 rec = true;
                 marker = 0;
                 ret = {rec};
-            } else { printDebugInfo('There is currently an active recoring', 'warning', 'Warning'); }
+            } else { printDebugInfo('There is currently an active recoring', 'warning'); }
             break;
         case 'stopRec': 
             if(rec){
@@ -113,7 +112,7 @@ function handleAction (url, origin){
                 sendMidiStudio(86);
                 rec = false;
                 ret = {rec};
-            } else { printDebugInfo('There is no active recoring that can be stopped', 'warning', 'Warning'); }
+            } else { printDebugInfo('There is no active recoring that can be stopped', 'warning'); }
             break;
         case 'setMarker':
             if(rec){
@@ -121,34 +120,34 @@ function handleAction (url, origin){
                 sendMidiStudio(87);
                 marker++;
                 ret = {marker};
-            } else { printDebugInfo('There is currently no active recording', 'warning', 'Warning'); }
+            } else { printDebugInfo('There is currently no active recording', 'warning'); }
             break;
             case 'setEndMarker': 
             if(!rec){
                 printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
                 sendMidiStudio(90);
-            } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
+            } else { printDebugInfo('There is currently an active recording', 'warning'); }
             break;
         case 'normalize':
             if(!rec){
                 printDebugInfo('Normalizing Effect will be started', 's1', origin);
                 sendMidiStudio(88);
-            } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
+            } else { printDebugInfo('There is currently an active recording', 'warning'); }
             break;
         case 'exportAudio':
             if(!rec) {
                 printDebugInfo('Exporting Process will be started', 's1', origin);
                 sendMidiStudio(89);
                 if(autoExport) callS1Export();
-            } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
+            } else { printDebugInfo('There is currently an active recording', 'warning'); }
             break;
         
         case 'bindPresenter': 
-            if(!bindPresenter){
-                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter', 'Warning');
+            if(!bindPresenter){     // Callable only once while runtime
+                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter');
                 callPresenterStartup();
                 bindPresenter = true;
-            } else { printDebugInfo('Presenter is already bound', 'error', 'Error'); }
+            } else { printDebugInfo('Presenter is already bound', 'error'); }
             break;
         case 'changeItem': 
             printDebugInfo('Item Selection will be changed', 'presenter', origin);
@@ -174,11 +173,15 @@ function handleAction (url, origin){
             printDebugInfo('Next Slide will be executed', 'presenter', origin);
             sendMidiPresenter(6);
             break;
-        default: printDebugInfo('Action not detected! Error!', 'error', 'local'); break;
+        
+        case 'debugStartup': 
+            printDebugInfo('The Localhost Debug-Helper has been accessed','debug');
+            break;
+        default: printDebugInfo('Action not detected! Error!', 'error'); break;
     }
-    latestAction = action;
-    writeToJSONfile();
-    return ret;
+    if(action != 'debugStartup') latestAction = action;
+    if (origin == 'Debug') return returnJSONdata(); 
+    else return ret;
 }
 //#region Send MIDI-Commands
 
@@ -220,31 +223,16 @@ function sendMidiPresenter(note){
 }
 //#endregion
 
-//#region Various Functions, needed for the Debug-Helper
-
 /**
- * Return JSON-Data for handling frontend Logic
- * @param  {string} action
- * latestAction parameter 
+ * Return JSON-Data for handling frontend Logic and Config
  */
 function returnJSONdata(){
-    return { 'recStatus': rec, 'markerCount': marker, 'latestAction': latestAction };
+    return { 
+        'recStatus': rec, 
+        'markerCount': marker, 
+        'latestAction': latestAction, 
+        'deactivateMidi': deactivateMidi, 
+        'deactivateAutoExport': !autoExport, 
+        'MidiOutput': midiName
+    };
 }
-
-function resetJSONobject(){
-    rec = false;
-    marker = 0;
-    latestAction = '';
-    writeToJSONfile();
-}
-
-/**
- * Write the JSON-Object from the 'returnJSONdata' method to the 'latestInfo.json' file.
- */
-async function writeToJSONfile(){
-    var jsonContent = JSON.stringify(returnJSONdata());
-    await fs.writeFile("./views/latestInfo.json", jsonContent, 'utf8', (err) => {
-        if (err) { printDebugInfo(`An error occured while writing JSON Object to File.\n${err}`, '', 'Error!'); }
-    });
-}
-//#endregion

@@ -8,7 +8,7 @@
     <link rel="icon" href="/Logo.png">
     <title>http2midi - Debug-Helper</title>
 </head>
-<body onload="loadCurrentStatus();loadConfig();">
+<body onload="sendAction('debugStartup')">
     <div class="header">
         <h1>Debug-Helper for http2midi</h1>
         <p>This Website is to help test and debug the http2midi application. The Webserver itself is for sending Commands from a Streamdeck running <a target="_blank" href="http://192.168.178.24:8000/buttons">Companion</a>. Afterward, it sends Midi Commands to Studio One, the Audio recording software, or Presenter, the presentation software.
@@ -91,15 +91,7 @@
             <h3>Status for Debugging</h3>
             <table id="switch">
                 <tr>
-                    <td width="80%">MIDI Output:</td>
-                    <td>
-                        <div class="switch">
-                            <input type="checkbox" id="switchMidi">
-                            <span class="slider round"></span>
-                      </div></td>
-                </tr>
-                <tr>
-                    <td>AutoExport</td>
+                    <td>AutoExport:</td>
                     <td>
                         <div class="switch">
                             <input type="checkbox" id="switchExport">
@@ -108,10 +100,17 @@
                     </td>
                 </tr>
                 <tr>
-                   <td colspan="2">
-                       MidiOutput:
-                       <input type="text" id="midiOutput"  class="status-text" readonly>
-                   </td> 
+                    <td width="80%">MIDI Output:</td>
+                    <td>
+                        <div class="switch">
+                            <input type="checkbox" id="switchMidi">
+                            <span class="slider round"></span>
+                      </div></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="midiOutput"  class="status-text" readonly>
+                    </td> 
                 </tr>
             </table>
         </div>
@@ -147,22 +146,26 @@
             document.getElementById('response').value = 'The server will shut down';
             url += action;
         } else {
-            url += `send?action=${action}`;
+            url += `debug?action=${action}`;
         }
-        fetch(url).then(response => response.json()).then(text => {});
-        setTimeout(() => {
-            loadCurrentStatus();
-        }, 100);
-    }
-    function loadCurrentStatus(){
-        // alert('body loaded');
-        fetch('./latestInfo.json').then(response => response.json()).then(jsondata => {
-            parseDataToElements(jsondata)
+        fetch(url).then(response => response.json()).then(data => {
+            setTimeout(() => {
+            parseDataToElements(data);
+            }, 100);
         });
+        
     }
     let recStatus = document.getElementById('recStatus');
+    let switchMidi = document.getElementById('switchMidi');
+    let switchExport = document.getElementById('switchExport');
+    /**
+     * @param  {string} data
+     */
     function parseDataToElements(data){
         document.getElementById('markerCount').value = data.markerCount;
+        document.getElementById('midiOutput').value = data.MidiOutput;
+
+        // Handling the Recording Status with color-coding
         if(data.recStatus == true) {
             recStatus.classList.add('status-active');
             if(recStatus.classList.contains('status-stopped') == true) recStatus.classList.remove('status-stopped');
@@ -175,6 +178,8 @@
             }
             recStatus.value = "Stopped!"
         }
+
+        //Handling the Response-Textarea
         if(data.latestAction == ''){
             document.getElementById('response').value = '';
             recStatus.value = '';
@@ -187,19 +192,13 @@
         else {
             document.getElementById('response').value = `Latest Action: ${data.latestAction}`;
         }
-    }
-    let switchMidi = document.getElementById('switchMidi');
-    let switchExport = document.getElementById('switchExport');
-    function loadConfig(){
-        fetch('../config.json').then(response => response.json()).then(jsondata => {
-            document.getElementById('midiOutput').value = jsondata.MidiOutput;
 
-            if(jsondata.deactivateMidi == true) switchMidi.checked = false;
+        // Handling the Status indicators for AutoExport and MidiOutput
+        if(data.deactivateMidi == true) switchMidi.checked = false;
             else switchMidi.checked = true;
 
-            if(jsondata.deactivateAutoExport == false) switchExport.checked = true;
+            if(data.deactivateAutoExport == false) switchExport.checked = true;
             else switchExport.checked = false;
-        });
     }
 </script>
 

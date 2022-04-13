@@ -29,7 +29,7 @@ and the following sample for Presenter:
 }
 ```
 
-For your use, you have to edit the config.json file. That is for several reasons: 
+For your use, you have to edit the parameters of the loadConfig function in the index.js:28. That is for several reasons: 
 1. To suit your environment
 2. To test/debug, or 
 3. even upgrade the software.

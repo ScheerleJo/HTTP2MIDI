@@ -7,6 +7,9 @@
     "startup": "node index.js",
     "dev": "nodemon index.js"
   },
+  "bin":{
+    "http2midi": "./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "HTTP2MIDI"
@@ -22,9 +25,12 @@
     "cors": "^2.8.5",
     "easymidi": "^2.1.0",
     "express": "^4.17.3",
-    "fs": "^0.0.1-security",
-    "midi": "^2.0.0",
     "nodemon": "^2.0.15",
-    "url-parse": "^1.5.4"
+    "url-parse": "^1.5.4",
+    "pkg": "^5.6.0"
+  },
+  "pkg": {
+    "assets": ["views/**/*", "scripts/**/*"],
+    "targets": [ "node16-win-x64" ]
   }
 }
