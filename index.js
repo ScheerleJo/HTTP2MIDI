@@ -10,11 +10,6 @@ const app = express();
     latest edit: 12.04.2022
 */
 
-// TODO: check config.json file for (deactivateMidi, deactivateAutoExport, MidiOutput)
-
-lib.deactivateMidiAction(true);     //determines whether the MIDI-Output is actually used
-lib.deactivateAutoExport(true);      //determines whether the Auto-Export for Studio One is active
-
 //#region PreStartup Things
 let corsOptions = {
     origin: '*',
@@ -23,19 +18,20 @@ let corsOptions = {
 }
 
 app.use(cors(corsOptions));
+app.use(express.static(__dirname));
 app.use(express.static(__dirname + '/views'));
 app.use(express.static(__dirname + '/views/images'));
 app.use(express.static(__dirname + '/scripts'));
 
 
 lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\n Trying to start the server...\n', 'info', 'local');
-lib.startMidiOutput();              //start MIDI-Output, when 'deactivateMIDI' is false
+lib.loadConfig(); 
 //#endregion
 
 //#region RequestHandlers
 app.get('/', (req, res) =>{
-    res.sendFile(lib.debugPath());
     lib.writeToJSONfile();
+    res.sendFile(__dirname + '/views/debug-helper.html');
     lib.printDebugInfo('The Localhost Debug-Helper has been accessed','info', 'local');
 });
 
