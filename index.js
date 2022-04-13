@@ -24,7 +24,7 @@ app.use(express.static(__dirname + '/views/images'));
 app.use(express.static(__dirname + '/scripts'));
 
 
-lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\n Trying to start the server...\n', 'info', 'local');
+lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\n Trying to start the server...\n', 'info');
 lib.loadConfig({
     'deactivateMidi': true, 
     'deactivateAutoExport': true , 

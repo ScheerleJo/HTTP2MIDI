@@ -44,7 +44,7 @@ function callS1Export() {
 function loadConfig(config){
     if(config.deactivateMidi == true){
         deactivateMidi = true;
-        printDebugInfo('MIDI-Output is disabled. Check config.json to activate!', 'warning');
+        printDebugInfo('MIDI-Output is disabled. Check index.js:28 to activate!', 'warning');
     } else {
         deactivateMidi = false;
         midiOutput = new midi.Output(config.midiOutput);
@@ -53,7 +53,7 @@ function loadConfig(config){
     let exportState = 'AutoExport for Studio one is';
     if(config.deactivateAutoExport == true){
         autoExport = false;
-        printDebugInfo(`${exportState} OFF. Check config.json to activate!`, 'warning');
+        printDebugInfo(`${exportState} OFF. Check index.js:28 to activate!`, 'warning');
     } else {
         autoExport = true;
         printDebugInfo(`${exportState} ON`, 'info');
