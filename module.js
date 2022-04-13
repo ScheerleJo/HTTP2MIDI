@@ -1,30 +1,26 @@
+DocumentType= module;
+
 const midi = require('easymidi');
 const url_parse = require('url-parse');
-const path = require('path');
 const fs = require('fs');
 const exec = require('child_process').execFile;
 
-let midiOutput;
+var midiOutput;
+
 let deactivateMidi = false;
-let autoExport = false;
+var autoExport = false;
+let bindPresenter = false;
 let rec = false;
 let marker = 0;
 let latestAction = '';
 
-DocumentType= module;
-
 module.exports = {
-    deactivateMidiAction,
-    deactivateAutoExport,
+    loadConfig,
     printDebugInfo,
-    startMidiOutput,
     handleAction,
     killMidiOutput,
-    debugPath,
     writeToJSONfile,
-    resetJSONobject,
-    returnJSONdata,
-    callPresenterStartup
+    resetJSONobject
 }
 
 /**
@@ -38,33 +34,34 @@ function callPresenterStartup() {
  * function to call the AutoExportScript.
  */
 function callS1Export() {
-    exec('.scripts/midi2s1_export.exe');
+    exec('./scripts/midi2s1_export.exe');
 }
-
 /**
- * function to deactivate the MIDI-Output sequence.
- * Useful, when programming and not having a MIDI-Controller
- * @param  {boolean} state
+ * Load the Config file and parse the fetched information.
+ * Handling Midi-Output and AutoExport.
+ * Useful, when programming and testing!
  */
-function deactivateMidiAction(state){
-    if(state== true){ 
-        deactivateMidi = true; 
-    } else { 
-        deactivateMidi = false; 
-    }
-}
-
-/**
- * function to activate the Auto-Export sequence for Studio.
- * Currently in testing -> useful to activate and deactivate it.
- * @param  {boolean} state
- */
-function deactivateAutoExport(state){
-    if(state== true){ 
-        autoExport = false; 
-    } else { 
-        autoExport = true; 
-    }
+async function loadConfig(){
+    await fs.readFile('./config.json', (error, data) => {
+        if(error) throw error;
+        const config = JSON.parse(data);
+        if(config.deactivateMidi == true){
+            deactivateMidi = true;
+            printDebugInfo('MIDI-Output is disabled. Check config.json to activate!', 'warning');
+        } else {
+            deactivateMidi = false;
+            midiOutput = new midi.Output(config.MidiOutput);
+            printDebugInfo(`MIDI-Output is open on: ${config.midiOutput}` , 'info');
+        }
+        let exportState = 'AutoExport for Studio one is';
+        if(config.deactivateAutoExport == true){
+            autoExport = false;
+            printDebugInfo(`${exportState} OFF. Check config.json to activate!`, 'warning');
+        } else {
+            autoExport = true;
+            printDebugInfo(`${exportState} ON`, 'info');
+        }
+    });
 }
 
 /**
@@ -86,9 +83,6 @@ function printDebugInfo(text, state, origin){
     }
 }
 
-function startMidiOutput(){
-    if(deactivateMidi == false){ midiOutput = new midi.Output('QUAD-CAPTURE'); }
-}
 function killMidiOutput(){
     if(deactivateMidi == false) { midiOutput.close(); }
 }
@@ -105,7 +99,7 @@ function handleAction (url, origin){
     let action = url_parse(url, true).query.action;
     switch (action){
         case 'startRec':
-            if(rec == false){
+            if(!rec){
                 printDebugInfo('Recording will be started', 's1', origin);
                 sendMidiStudio(85);
                 rec = true;
@@ -114,7 +108,7 @@ function handleAction (url, origin){
             } else { printDebugInfo('There is currently an active recoring', 'warning', 'Warning'); }
             break;
         case 'stopRec': 
-            if(rec == true){
+            if(rec){
                 printDebugInfo('Recording will be stopped', 's1', origin);
                 sendMidiStudio(86);
                 rec = false;
@@ -122,7 +116,7 @@ function handleAction (url, origin){
             } else { printDebugInfo('There is no active recoring that can be stopped', 'warning', 'Warning'); }
             break;
         case 'setMarker':
-            if(rec == true){
+            if(rec){
                 printDebugInfo('Marker will be set', 's1', origin);
                 sendMidiStudio(87);
                 marker++;
@@ -130,23 +124,31 @@ function handleAction (url, origin){
             } else { printDebugInfo('There is currently no active recording', 'warning', 'Warning'); }
             break;
             case 'setEndMarker': 
-            if(rec == false){
+            if(!rec){
                 printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
                 sendMidiStudio(90);
             } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
             break;
         case 'normalize':
-            if(rec == false){
+            if(!rec){
                 printDebugInfo('Normalizing Effect will be started', 's1', origin);
                 sendMidiStudio(88);
             } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
             break;
         case 'exportAudio':
-            if(rec == false) {
+            if(!rec) {
                 printDebugInfo('Exporting Process will be started', 's1', origin);
                 sendMidiStudio(89);
-                callS1Export();
+                if(autoExport) callS1Export();
             } else { printDebugInfo('There is currently an active recording', 'warning', 'Warning'); }
+            break;
+        
+        case 'bindPresenter': 
+            if(!bindPresenter){
+                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter', 'Warning');
+                callPresenterStartup();
+                bindPresenter = true;
+            } else { printDebugInfo('Presenter is already bound', 'error', 'Error'); }
             break;
         case 'changeItem': 
             printDebugInfo('Item Selection will be changed', 'presenter', origin);
@@ -220,10 +222,6 @@ function sendMidiPresenter(note){
 
 //#region Various Functions, needed for the Debug-Helper
 
-function debugPath(){
-    return path.join(__dirname + '/views/debug-helper.html');
-}
-
 /**
  * Return JSON-Data for handling frontend Logic
  * @param  {string} action
@@ -236,16 +234,16 @@ function returnJSONdata(){
 function resetJSONobject(){
     rec = false;
     marker = 0;
-    latestAction = 0;
+    latestAction = '';
     writeToJSONfile();
 }
 
 /**
  * Write the JSON-Object from the 'returnJSONdata' method to the 'latestInfo.json' file.
  */
-function writeToJSONfile(){
+async function writeToJSONfile(){
     var jsonContent = JSON.stringify(returnJSONdata());
-    fs.writeFile("./views/latestInfo.json", jsonContent, 'utf8', (err) => {
+    await fs.writeFile("./views/latestInfo.json", jsonContent, 'utf8', (err) => {
         if (err) { printDebugInfo(`An error occured while writing JSON Object to File.\n${err}`, '', 'Error!'); }
     });
 }

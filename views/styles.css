@@ -1,11 +1,13 @@
 * {
     font-family: Roboto, Noto, sans-serif;
     color:rgb(200, 200, 200);
+    box-sizing: border-box;
 }
 
-body {
+body, html {
     background: rgb(30,30,30);
     display: block;
+    padding: 5px;
 }
 
 button {
@@ -26,33 +28,35 @@ button:active {
     background: rgb(202, 0, 0);
     color: white;
 }
-
 .container {
     background: rgb(50, 50, 50);
     border:rgb(80, 80, 80) 2px dashed;
-    display: inline-table;
+    display: inline-block;
+    vertical-align: top;
     margin: 10px;
     box-shadow: 7px 7px 15px 3px rgba(0, 0, 0, 0.2);
+    width: max-content;
 }
 .container-head {
-    height: 50px;
-    border-bottom: rgb(20, 20, 20) 2px solid; 
+    border-bottom: rgb(80, 80, 80) 2px solid; 
     padding: 15px;
     padding-bottom: 5px;
 }
 .container-body {
     margin: 10px;
+    width: max-content;
 }
 .container-event {
-    margin: 5px;
+    margin: 5px auto;
     /* padding:5px; */
     border: rgb(25, 25, 25) 1px solid;
     display: block;
     background: rgb(70, 70, 70);
     position: relative;
+    width:auto;
+
 }
 h2 {
-    padding-bottom: 10px;
     font-size: 25px;
     display: inline-block;
     margin: 5px 20px;
@@ -65,7 +69,7 @@ img  {
 }
 textarea {
     width: 300px;
-    height: 44px;
+    height: 50px;
     margin: 10px;
     background: rgb(83, 83, 83);
     display: inline-block;
@@ -79,12 +83,8 @@ textarea {
     height: 75px;
     margin-top: 0px;
 }
-.radio {
-    display: block;
-    margin: 10px;
-}
 h3 {
-    margin: 5px 10px 0px 10px;
+    margin: 5px 10px;
 }
 .status-text {
     background: rgb(83, 83, 83);
@@ -99,15 +99,113 @@ h3 {
     display: block;
     margin-left: 5px;
 }
-tr {
-    margin: 10px 0;
-}
 .status-active {
-    border: rgb(200, 0, 0) 2px solid;
+    background: rgb(200, 0, 0);
+    color: rgb(200, 200, 200);
 }
 .status-stopped {
-    border: rgb(0, 200, 0) 2px solid;
+    background: rgb(0, 200, 0);
+    color:rgb(50, 50, 50);
 }
 #markerCount {
     margin-bottom: 7px;
 }
+
+table#switch {
+    /* background: red; */
+    margin-left: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+table#switch tbody tr {
+    margin-top: 10px;
+}
+#midiOutput {
+    width: 100%;
+}
+
+h1 {
+    margin-top: 0;
+    background: linear-gradient(348deg, rgb(0, 68, 255) 0%, rgb(22, 182, 46) 100%);
+    width: max-content;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    
+}
+p {
+    position: relative;
+    width: 90%;
+    margin-left: 20px;
+}
+a {
+    color: rgb(0, 153, 255);
+}
+
+/* #region Toggle Switch*/  
+ /* The switch - the box around the slider */
+ .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 20px;
+    margin-bottom: 10px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 1px;
+    bottom: 1px;
+    background-color: gray;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: rgb(0, 219, 0)
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px rgb(0, 255, 0);
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(29px);
+    -ms-transform: translateX(29px);
+    transform: translateX(29px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  } 
+
+/* #endregion */
