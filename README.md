@@ -29,7 +29,7 @@ and the following sample for Presenter:
 }
 ```
 
-For your use, you have to edit the parameters of the loadConfig function in the index.js:28. That is for several reasons: 
+For your use, you have to edit the parameters of the default.json config-file. That is for several reasons: 
 1. To suit your environment
 2. To test/debug, or 
 3. even upgrade the software.
@@ -37,20 +37,17 @@ For your use, you have to edit the parameters of the loadConfig function in the 
 If you use the software and have ideas to upgrade, please let me know. This applies if you upgrade the software on your own, too.
 
 ## Installation
+! Warning!
+
+You are in need for the Desktop Software Development Kit in C++ and a [Python Version](https://www.python.org/downloads/). You have to install these before installing your node packages.
+
+For the Desktop Software Development Kit in C++ you simply have to downlad and install the [Installer](https://visualstudio.microsoft.com/de/downloads/) (The Community Version is free and supported).
+Next you open the installer if it isn't already, and select the Desktop Software Development Kit in C++. You don't need anything else for this application. After this installation you are good to go!
+
 Like any other Node.js Webserver, you download this repository and extract it into a folder of your choice. In there, you open the command prompt and type in:
 ```
 npm install
 ```
-! Warning!
-
-Currently, also in need are the Windows Build Tools or a Visual Studio installation with the Desktop Software Development Kit in C++. You have to install one of these before installing your node packages.
-
-For the Windows Build Tools, you have to open the Windows PowerShell as Admin and type:
-```
-npm install Windows-Build-Tools --g
-```
-This process will take several minutes.
-
 After that, you are ready to go and can start the application with the command:
 ```
 npm run startup
@@ -59,7 +56,9 @@ npm run startup
 ## Future Plans
 The plan is to eventually move the MIDI-Output from a physical to a virtual Port. Maybe with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtual midi applications.
 ### ToDos
-- Compile Script and only have to use the exe and config file
+- Test the Webserver in the church
+- update Companion
+- add Variables for callback in Companion
 
 #### AutoHotkey
 - program AutoExport script
