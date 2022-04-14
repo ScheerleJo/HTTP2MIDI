@@ -1,0 +1,11 @@
+{
+    "server": {
+        "port": 8010,
+        "host": "locahlost"
+    },
+    "midiConfig": {
+        "name": "QUAD-CAPTURE",
+        "active": false
+    },
+    "autoExport": false
+}

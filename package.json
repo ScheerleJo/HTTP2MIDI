@@ -7,7 +7,7 @@
     "startup": "node index.js",
     "dev": "nodemon index.js"
   },
-  "bin":{
+  "bin": {
     "http2midi": "./index.js"
   },
   "repository": {
@@ -22,15 +22,21 @@
   "author": "Josia Scheerle",
   "license": "MIT",
   "dependencies": {
+    "config": "^3.3.7",
     "cors": "^2.8.5",
     "easymidi": "^2.1.0",
     "express": "^4.17.3",
     "nodemon": "^2.0.15",
-    "url-parse": "^1.5.4",
-    "pkg": "^5.6.0"
+    "pkg": "^5.6.0",
+    "url-parse": "^1.5.4"
   },
   "pkg": {
-    "assets": ["views/**/*", "scripts/**/*"],
-    "targets": [ "node16-win-x64" ]
+    "assets": [
+      "views/**/*",
+      "scripts/**/*"
+    ],
+    "targets": [
+      "node16-win-x64"
+    ]
   }
 }

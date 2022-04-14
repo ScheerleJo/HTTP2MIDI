@@ -3,7 +3,8 @@ DocumentType= module;
 const midi = require('easymidi');
 const url_parse = require('url-parse');
 const exec = require('child_process').execFile;
-
+const config = require('config');
+const PORT = config.get('server.port');
 var midiOutput;
 
 let deactivateMidi = false;
@@ -15,6 +16,7 @@ let latestAction = '';
 let midiName = '';
 
 module.exports = {
+    PORT,
     loadConfig,
     printDebugInfo,
     handleAction,
@@ -38,27 +40,25 @@ function callS1Export() {
  * Load the Config file and parse the fetched information.
  * Handling Midi-Output and AutoExport.
  * Useful, when programming and testing!
- * @param {object} config
- * parse the config-data from the index
  */
-function loadConfig(config){
-    if(config.deactivateMidi == true){
+function loadConfig(){
+    if(config.get('midiConfig.active') == false){
         deactivateMidi = true;
-        printDebugInfo('MIDI-Output is disabled. Check index.js:28 to activate!', 'warning');
+        printDebugInfo('MIDI-Output is disabled. Check config/default.json to activate!', 'warning');
     } else {
         deactivateMidi = false;
-        midiOutput = new midi.Output(config.midiOutput);
+        midiOutput = new midi.Output(config.get('midiConfig.name'));
         printDebugInfo(`MIDI-Output is open on: ${config.midiOutput}` , 'info');
     }
-    let exportState = 'AutoExport for Studio one is';
-    if(config.deactivateAutoExport == true){
-        autoExport = false;
-        printDebugInfo(`${exportState} OFF. Check index.js:28 to activate!`, 'warning');
-    } else {
+    let exportState = 'AutoExport for StudioOne is';
+    if(config.get('autoExport') == true){
         autoExport = true;
         printDebugInfo(`${exportState} ON`, 'info');
+    } else {
+        autoExport = false;
+        printDebugInfo(`${exportState} OFF. Check config/default.json to activate!`, 'warning');
     }
-    midiName = config.midiOutput
+    midiName = config.get('midiConfig.name');
 }
 
 /**
