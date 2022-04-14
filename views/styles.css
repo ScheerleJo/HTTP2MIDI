@@ -12,7 +12,7 @@ body, html {
 
 button {
     background: rgb(83, 83, 83);
-    height: 50px;
+    height: 60px;
     width: 160px;
     display: inline-block;
     margin: 10px;
@@ -54,7 +54,6 @@ button:active {
     background: rgb(70, 70, 70);
     position: relative;
     width:auto;
-
 }
 h2 {
     font-size: 25px;
@@ -69,13 +68,14 @@ img  {
 }
 textarea {
     width: 300px;
-    height: 50px;
+    height: 60px;
     margin: 10px;
     background: rgb(83, 83, 83);
     display: inline-block;
     resize: none;
     border: rgb(56, 56, 56) 1px solid;
     border-radius: 3px;
+    font-size: 14px;
 }
 #response {
     position: relative;
