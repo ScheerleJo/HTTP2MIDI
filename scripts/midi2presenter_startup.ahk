@@ -1,10 +1,10 @@
 #SingleInstance, force
 
-sleep 1000
-; BlockInput MouseMove
+sleep 100
 CoordMode, Mouse, Screen
 varActive := WinExist("Presenter")
 if (varActive != 0){
+    BlockInput MouseMove
     MouseMove, ;to Settings Icon
     Click Left
     Sleep, 50
@@ -21,6 +21,7 @@ if (varActive != 0){
     Click Left
     MouseMove, ;to Presenter Logo
     Click Left
+    BlockInput, MouseMoveOff
 }
 else {
     MsgBox, Presenter isn't active
