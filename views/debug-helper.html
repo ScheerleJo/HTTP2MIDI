@@ -11,7 +11,7 @@
 <body onload="sendAction('debugStartup')">
     <div class="header">
         <h1>Debug-Helper for http2midi</h1>
-        <p>This Website is to help test and debug the http2midi application. The Webserver itself is for sending Commands from a Streamdeck running <a target="_blank" href="http://192.168.178.24:8000/buttons">Companion</a>. Afterward, it sends Midi Commands to Studio One, the Audio recording software, or Presenter, the presentation software.
+        <p>This Website is to help test and debug the http2midi application. The Webserver itself is for sending Commands from a Streamdeck running <a target="_blank" href="http://192.168.178.24:8000/buttons">Companion</a>. Afterward, it sends Midi Commands to Studio One, the Audio recording software, or Presenter, the well .... presentation software ;).
             If there are any questions about functionality or problems, please let me know.</p>
     </div>
 <div class="container" id="s1-container">
@@ -49,12 +49,12 @@
 <div class="container" id="presenter-container">
     <div class="container-head">
         <img id="s1" src="/Presenter.png">
-        <h2>Worship Extreme: Presenter</h2>
+        <h2>Worship Tools: Presenter</h2>
     </div>
     <div class="container-body">
         <div class="container-event">
             <button onclick="sendAction('bindPresenter')">bind Midi to Presenter</button>
-            <textarea>bind the Midi-Output to Presenter after starting it. Due to some random Bullshit, the binding gets lost when closing the program.</textarea>
+            <textarea>bind the Midi-Output to Presenter after starting it. Due to some function, the binding gets lost when closing the program.</textarea>
         </div>
         <div class="container-event">
             <button onclick="sendAction('changeItem')">to first Item</button>
