@@ -1,7 +1,7 @@
 # HTTP2MIDI
 
 This application uses a Node.js Webserver, which handles basic conversion from an HTTP-Request to a MIDI signal. 
-The MIDI signal controls the Recording DAW (Digital Audio Workstation), in this case [Presonus' Studio One](https://www.presonus.com/products/Studio-One) on Midi-Channel 1. In Addition to that, there is the control for "Presenter" by [WorshipExtreme](https://www.worshipextreme.com/en-us) on Midi-Channel 2.
+The MIDI signal controls the Recording DAW (Digital Audio Workstation), in this case [Presonus' Studio One](https://www.presonus.com/products/Studio-One) on Midi-Channel 1. In Addition to that, there is the control for "Presenter" by [WorshipTools](https://www.worshiptools.com/en-us) on Midi-Channel 2.
 
 ## Own Usecase
 The basic idea is to press a button on an Elgato Streamdeck running [Companion](https://github.com/bitfocus/companion). It sends an HTTP-Request to the computer running Studio One and Presenter for audio recording and visuals. There the Midi Signal gets created and input into the programs.
