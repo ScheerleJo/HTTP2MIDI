@@ -59,7 +59,7 @@ The plan is to eventually move the MIDI-Output from a physical to a virtual Port
 - Test the Webserver in the church
 - update Companion
 - add Variables for callback in Companion
-- implement the WorshipTools api to automate Presenter and Planning (if there is such a thing)
+- implement the WorshipTools api to automate Presenter and Planning (if it is possible without an API)
 
 #### AutoHotkey
 - program AutoExport script

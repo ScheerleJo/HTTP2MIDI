@@ -42,13 +42,14 @@ function callS1Export() {
  * Useful, when programming and testing!
  */
 function loadConfig(){
+    midiName = config.get('midiConfig.name');
     if(config.get('midiConfig.active') == false){
         deactivateMidi = true;
         printDebugInfo('MIDI-Output is disabled. Check config/default.json to activate!', 'warning');
     } else {
         deactivateMidi = false;
         midiOutput = new midi.Output(config.get('midiConfig.name'));
-        printDebugInfo(`MIDI-Output is open on: ${config.midiOutput}` , 'info');
+        printDebugInfo(`MIDI-Output is open on: ${midiName}` , 'info');
     }
     let exportState = 'AutoExport for StudioOne is';
     if(config.get('autoExport') == true){
@@ -58,7 +59,6 @@ function loadConfig(){
         autoExport = false;
         printDebugInfo(`${exportState} OFF. Check config/default.json to activate!`, 'warning');
     }
-    midiName = config.get('midiConfig.name');
 }
 
 /**
