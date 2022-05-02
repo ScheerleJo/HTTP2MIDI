@@ -37,7 +37,6 @@ For your use, you have to edit the parameters of the default.json config-file. T
 If you use the software and have ideas to upgrade, please let me know. This applies if you upgrade the software on your own, too.
 
 ## Installation
-! Warning!
 
 You are in need for the Desktop Software Development Kit in C++ and a [Python Version](https://www.python.org/downloads/). You have to install these before installing your node packages.
 
