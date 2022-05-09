@@ -70,11 +70,6 @@ The plan is to eventually move the MIDI-Output from a physical to a virtual Port
 
 - implement the WorshipTools api to automate Presenter and Planning (if it is possible without an API)
 
-### AutoHotkey
-
-- program AutoExport script
-- program script for connecting midi2presenter
-
 ## Developer
 
-<img src="https://avatars.githubusercontent.com/ScheerleJo"   height="50px" title="Josia Scheerle"/> | [`@ScheerleJo`](https://github.com/ScheerleJo)
+<img src="https://avatars.githubusercontent.com/ScheerleJo" height="50px" title="Josia Scheerle"/> | [`@ScheerleJo`](https://github.com/ScheerleJo)

@@ -144,7 +144,7 @@ function handleAction (url, origin){
         
         case 'bindPresenter': 
             if(!bindPresenter){     // Callable only once while runtime
-                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter');
+                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter', origin);
                 callPresenterStartup();
                 bindPresenter = true;
             } else { printDebugInfo('Presenter is already bound', 'error'); }

@@ -5,21 +5,21 @@ CoordMode, Mouse, Screen
 varActive := WinExist("Presenter")
 if (varActive != 0){
     BlockInput MouseMove
-    MouseMove, ;to Settings Icon
+    MouseMove, 1869, 63		;to Settings Icon
     Click Left
     Sleep, 50
-    MouseMove, ;to Settings
+    MouseMove, 1724, 241	;to Settings
     Click Left
     Sleep, 100
-    MouseMove, ;to MIDI-Section
+    MouseMove, 385, 846		;to MIDI-Section
     Click Left
     Sleep, 50
-    MouseMove, ;to Connect with MIDI-Network
+    MouseMove, 1724, 241	;to Connect with MIDI-Network
     Click Left
     Sleep 50
-    MouseMove, ;to MIDI-Port
+    MouseMove, 1751, 353	;to MIDI-Port
     Click Left
-    MouseMove, ;to Presenter Logo
+    MouseMove, 166, 64		;to Presenter Logo
     Click Left
     BlockInput, MouseMoveOff
 }
