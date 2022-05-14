@@ -4,7 +4,7 @@ CoordMode, Mouse, Screen
 sleep 100
 varStudio := WinExist("Studio One")
 if (varStudio != 0){
-    ;BlockInput MouseMove
+    BlockInput MouseMove
     MouseMove, 1203, 267				;to Folder Selection
     Click Left
     Sleep, 200
@@ -23,7 +23,19 @@ if (varStudio != 0){
     SendInput, %varDate%_godi
     MouseMove, 1517, 788			;to Export Button
     Click Left
+    BlockInput, MouseMoveOff
+    Sleep, 50
+    varExport := WinExist("Bitte warten...")
+    if (varExport != 0) {
+        varState := 1
+    }
 }
-;BlockInput, MouseMoveOff
+
+if (varState == 1) {
+    Run, curl ""http://localhost:8010/send/callback?program=s1&state=true"", , Hide
+}
+else {
+    Run, curl ""http://localhost:8010/send/callback?program=s1&state=false"", , Hide
+}
 
 ExitApp, 1 

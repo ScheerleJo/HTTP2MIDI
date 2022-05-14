@@ -1,4 +1,5 @@
-DocumentType= module;
+// eslint-disable-next-line no-global-assign
+DocumentType = module;
 
 const midi = require('easymidi');
 const url_parse = require('url-parse');
@@ -20,6 +21,7 @@ module.exports = {
     loadConfig,
     printDebugInfo,
     handleAction,
+    handleCallback,
     killMidiOutput
 }
 
@@ -144,9 +146,8 @@ function handleAction (url, origin){
         
         case 'bindPresenter': 
             if(!bindPresenter){     // Callable only once while runtime
-                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter', origin);
+                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter');
                 callPresenterStartup();
-                bindPresenter = true;
             } else { printDebugInfo('Presenter is already bound', 'error'); }
             break;
         case 'changeItem': 
@@ -182,6 +183,30 @@ function handleAction (url, origin){
     if(action != 'debugStartup') latestAction = action;
     if (origin == 'Debug') return returnJSONdata(); 
     else return ret;
+}
+
+
+function handleCallback(url){
+    let query = url_parse(url, true).query
+    let state = (query.state === 'true')
+    switch(query.program){
+        case 's1':
+            if(state == false){
+                printDebugInfo('The AutoExport failed!', 'error');
+                break;
+            }
+            printDebugInfo('The AutoExport was successful!', 's1', 'ahk');
+            break;
+        case 'presenter':
+            if(state == false){
+                printDebugInfo('Binding Midi to Presenter failed!', 'error');
+                bindPresenter = false;
+                break;
+            }
+            printDebugInfo('Binding to Presenter was successful!', 'presenter', 'ahk');
+            bindPresenter = true;
+            break;
+    }
 }
 //#region Send MIDI-Commands
 

@@ -1,6 +1,8 @@
 #SingleInstance, force
 
 sleep 100
+varState := 0
+
 CoordMode, Mouse, Screen
 varActive := WinExist("Presenter")
 if (varActive != 0){
@@ -22,8 +24,16 @@ if (varActive != 0){
     MouseMove, 166, 64		;to Presenter Logo
     Click Left
     BlockInput, MouseMoveOff
+    PixelGetColor, varColor, X, Y , RGB
+    if (varColor := ) {
+        varState := 1
+    }
+}
+
+if (varState == 1) {
+    Run, curl ""http://localhost:8010/send/callback?program=presenter&state=true"", , Hide
 }
 else {
-    MsgBox, Presenter isn't active
+    Run, curl ""http://localhost:8010/send/callback?program=presenter&state=false"", , Hide
 }
 ExitApp, 1 
