@@ -26,9 +26,12 @@
     "cors": "^2.8.5",
     "easymidi": "^2.1.0",
     "express": "^4.17.3",
-    "nodemon": "^2.0.15",
     "pkg": "^5.6.0",
     "url-parse": "^1.5.4"
+  },  
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "nodemon": "^2.0.15"
   },
   "pkg": {
     "assets": [
