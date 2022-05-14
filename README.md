@@ -68,7 +68,7 @@ npm run startup
 
 The plan is to eventually move the MIDI-Output from a physical to a virtual Port. Maybe with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtual midi applications.
 
-- implement the WorshipTools api to automate Presenter and Planning (if it is possible without an API)
+- program Status for midi2presenter_startup.ahk
 
 ## Developer
 
