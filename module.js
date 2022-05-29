@@ -117,14 +117,12 @@ function handleAction (url, origin){
             } else { printDebugInfo('There is no active recoring that can be stopped', 'warning'); }
             break;
         case 'setMarker':
-            if(rec){
-                printDebugInfo('Marker will be set', 's1', origin);
-                sendMidiStudio(87);
-                marker++;
-                ret = {marker};
-            } else { printDebugInfo('There is currently no active recording', 'warning'); }
+            printDebugInfo('Marker will be set', 's1', origin);
+            sendMidiStudio(87);
+            marker++;
+            ret = {marker};
             break;
-            case 'setEndMarker': 
+        case 'setEndMarker': 
             if(!rec){
                 printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
                 sendMidiStudio(90);
