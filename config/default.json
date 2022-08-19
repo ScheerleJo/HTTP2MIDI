@@ -3,9 +3,16 @@
         "port": 8010,
         "host": "localhost"
     },
-    "midiConfig": {
-        "name": "QUAD-CAPTURE",
-        "active": false
+    "midiOutputConfig": {
+        "name": "http2midi",
+        "active": true
     },
-    "autoExport": false
+    "midiInputConfig": {
+        "name": "http2midi", 
+        "active": true
+    },
+    "original Name": { 
+        "name": "QUAD-CAPTURE"
+    },
+    "autoExport": false    
 }

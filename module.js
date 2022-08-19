@@ -7,8 +7,10 @@ const exec = require('child_process').execFile;
 const config = require('config');
 const PORT = config.get('server.port');
 var midiOutput;
+// var midiInput;
 
 let deactivateMidi = false;
+// let deactivateMidiInput = false;
 let autoExport = false;
 let bindPresenter = false;
 let rec = false;
@@ -44,15 +46,27 @@ function callS1Export() {
  * Useful, when programming and testing!
  */
 function loadConfig(){
-    midiName = config.get('midiConfig.name');
-    if(config.get('midiConfig.active') == false){
+    let midiInName = config.get('midiInputConfig.name');
+    let midiOutName = config.get('midiOutputConfig.name');
+
+    if(config.get('midiInputConfig.active') == false){
+        // deactivateMidiInput = true;
+        printDebugInfo('MIDI-Input is disabled. Check config/default.json to activate!', 'warning');
+    } else {
+        // deactivateMidiInput = false;
+        // midiInput = new midi.Output(midiInName);
+        printDebugInfo(`MIDI-Input is open and listening on: ${midiInName}` , 'info');
+    }
+
+    if(config.get('midiOutputConfig.active') == false){
         deactivateMidi = true;
         printDebugInfo('MIDI-Output is disabled. Check config/default.json to activate!', 'warning');
     } else {
         deactivateMidi = false;
-        midiOutput = new midi.Output(config.get('midiConfig.name'));
-        printDebugInfo(`MIDI-Output is open on: ${midiName}` , 'info');
+        midiOutput = new midi.Output(midiOutName);
+        printDebugInfo(`MIDI-Output is open on: ${midiOutName}` , 'info');
     }
+
     let exportState = 'AutoExport for StudioOne is';
     if(config.get('autoExport') == true){
         autoExport = true;
@@ -143,7 +157,7 @@ function handleAction (url, origin){
             break;
         
         case 'bindPresenter': 
-            if(!bindPresenter){     // Callable only once while runtime
+            if(!bindPresenter){     // Callable only when Presenter isn't bound
                 printDebugInfo('MidiOutput will be bound to Presenter', 'presenter');
                 callPresenterStartup();
             } else { printDebugInfo('Presenter is already bound', 'error'); }
