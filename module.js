@@ -7,7 +7,7 @@ const exec = require('child_process').execFile;
 const config = require('config');
 const PORT = config.get('server.port');
 var midiOutput;
-// var midiInput;
+var midiInput;
 
 let deactivateMidi = false;
 // let deactivateMidiInput = false;
@@ -26,6 +26,10 @@ module.exports = {
     handleCallback,
     killMidiOutput
 }
+
+// This is still temporary until I figure out something better xD
+let midiInName = config.get('midiInputConfig.name');
+midiInput = new midi.Input(midiInName);
 
 /**
  * Function to bind the MIDI-Input to Presenter.
@@ -110,31 +114,29 @@ function killMidiOutput(){
  * Origin of the Request
  */
 function handleAction (url, origin){
-    let ret = '';
+    let returnMessage = '';
     let action = url_parse(url, true).query.action;
     switch (action){
         case 'startRec':
             if(!rec){
                 printDebugInfo('Recording will be started', 's1', origin);
                 sendMidiStudio(85);
-                rec = true;
                 marker = 0;
-                ret = {rec};
+                returnMessage = {rec};
             } else { printDebugInfo('There is currently an active recoring', 'warning'); }
             break;
         case 'stopRec': 
             if(rec){
                 printDebugInfo('Recording will be stopped', 's1', origin);
                 sendMidiStudio(86);
-                rec = false;
-                ret = {rec};
+                returnMessage = {rec};
             } else { printDebugInfo('There is no active recoring that can be stopped', 'warning'); }
             break;
         case 'setMarker':
             printDebugInfo('Marker will be set', 's1', origin);
             sendMidiStudio(87);
             marker++;
-            ret = {marker};
+            returnMessage = {marker};
             break;
         case 'setEndMarker': 
             if(!rec){
@@ -194,7 +196,7 @@ function handleAction (url, origin){
     }
     if(action != 'debugStartup') latestAction = action;
     if (origin == 'Debug') return returnJSONdata(); 
-    else return ret;
+    else return returnMessage;
 }
 
 
@@ -220,7 +222,11 @@ function handleCallback(url){
             break;
     }
 }
-//#region Send MIDI-Commands
+//#region Send/Recieve MIDI-Commands
+
+//Get current status of Recording in Studio One
+midiInput.on('start', () => rec = true)
+midiInput.on('stop', () => rec = false)
 
 /**
  * Sending ControlChange Commands on MIDI-Channel 1

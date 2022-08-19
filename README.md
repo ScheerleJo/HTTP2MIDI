@@ -5,7 +5,11 @@ The MIDI signal controls the Recording DAW (Digital Audio Workstation), in this 
 
 ## Own Usecase
 
-The basic idea is to press a button on an Elgato Streamdeck running [Companion](https://github.com/bitfocus/companion). It sends an HTTP-Request to the computer running Studio One and Presenter for audio recording and visuals. There the Midi Signal gets created and input into the programs.
+The basic idea is to press a button on an Elgato Streamdeck running [Companion](https://github.com/bitfocus/companion). It sends an HTTP-Request to the computer running Studio One and Presenter for audio recording and visuals. There the MIDI signal gets created and input into the programs.
+
+In our case, the MIDI signal gets sent through an audio interface that supports midi. That allows us to create and get the MIDI commands on one Laptop via hardware and no additional software.
+However it would be smarter to use a MIDI-Loopback adapter like [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) from Tobias Erichson.
+In a [future version of this software](#future_plans), I want to eliminate the need for separate soft- or hardware by creating my own in software MIDI-Loopback.
 
 ## How it works
 
@@ -63,6 +67,13 @@ After that, you are ready to go and can start the application with the command:
 ```cmd
 npm run startup
 ```
+
+### Studio One Setup
+
+For the configuration in Studio-One, you have to follow two main steps.
+
+First, you create a "Control Surface" as a MIDI input Listener. There you select the midi input you want to listen on.
+For the server to function correctly and get the current recording status, you need to set up a new instrument and select the MIDI output you have entered in the config file for http2midi. You also need to activate at least one of the midi channels for Studio-One to send the information.
 
 ## Future Plans
 
