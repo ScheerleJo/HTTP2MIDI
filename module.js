@@ -3,9 +3,11 @@ DocumentType = module;
 
 const midi = require('easymidi');
 const url_parse = require('url-parse');
-const exec = require('child_process').execFile;
+const execFile = require('child_process').execFile;
+const find = require('find-process');
 const config = require('config');
 const PORT = config.get('server.port');
+const VERSION = config.get('application.version');
 var midiOutput;
 var midiInput;
 
@@ -16,33 +18,36 @@ let bindPresenter = false;
 let rec = false;
 let marker = 0;
 let latestAction = '';
-let midiName = '';
+let midiInName = '';
+let midiOutName = '';
 
 module.exports = {
     PORT,
+    VERSION,
     loadConfig,
     printDebugInfo,
     handleAction,
-    handleCallback,
+    handleAHKCallback,
+    handleCompanionFeedback,
     killMidiOutput
 }
 
 // This is still temporary until I figure out something better xD
-let midiInName = config.get('midiInputConfig.name');
+midiInName = config.get('midiInputConfig.name');
 midiInput = new midi.Input(midiInName);
 
 /**
  * Function to bind the MIDI-Input to Presenter.
- * Due to some bullshit, the MIDI-connection is lost every single time, when you open Presenter.
+ * Due to some bullshit, the MIDI-connection is sometimes lost, when you open Presenter.
  */
 function callPresenterStartup() {
-    exec('./scripts/midi2presenter_startup.exe');  
+    execFile('./scripts/midi2presenter_startup.exe');  
 }
 /**
  * function to call the AutoExportScript.
  */
 function callS1Export() {
-    exec('./scripts/midi2s1_export.exe');
+    execFile('./scripts/midi2s1_export.exe');
 }
 /**
  * Load the Config file and parse the fetched information.
@@ -50,8 +55,8 @@ function callS1Export() {
  * Useful, when programming and testing!
  */
 function loadConfig(){
-    let midiInName = config.get('midiInputConfig.name');
-    let midiOutName = config.get('midiOutputConfig.name');
+    midiInName = config.get('midiInputConfig.name');
+    midiOutName = config.get('midiOutputConfig.name');
 
     if(config.get('midiInputConfig.active') == false){
         // deactivateMidiInput = true;
@@ -106,6 +111,11 @@ function killMidiOutput(){
     if(deactivateMidi == false) { midiOutput.close(); }
 }
 
+async function s1Active(){
+    var list = await find('name', 'Studio One');
+    if(list.length > 0) return true;
+    else return false;
+}
 /**
  * Toggle the corresponding action to the input action in the querystring
  * @param  {object} url
@@ -113,49 +123,72 @@ function killMidiOutput(){
  * @param  {string} origin
  * Origin of the Request
  */
-function handleAction (url, origin){
+async function handleAction (url, origin){
     let returnMessage = '';
     let action = url_parse(url, true).query.action;
     switch (action){
         case 'startRec':
-            if(!rec){
-                printDebugInfo('Recording will be started', 's1', origin);
-                sendMidiStudio(85);
-                marker = 0;
-                returnMessage = {rec};
-            } else { printDebugInfo('There is currently an active recoring', 'warning'); }
+            if(await s1Active()){
+                if(!rec){
+                    printDebugInfo('Recording will be started', 's1', origin);
+                    sendMidiStudio(85);
+                    marker = 0;
+                    returnMessage = {rec};
+                }
+                else printDebugInfo('There is currently an active recoring', 'warning'); 
+            }
+            else printDebugInfo('Studio One is not running!', 'error');
             break;
-        case 'stopRec': 
-            if(rec){
-                printDebugInfo('Recording will be stopped', 's1', origin);
-                sendMidiStudio(86);
-                returnMessage = {rec};
-            } else { printDebugInfo('There is no active recoring that can be stopped', 'warning'); }
+            case 'stopRec': 
+            if(await s1Active()){
+                if(rec){
+                    printDebugInfo('Recording will be stopped', 's1', origin);
+                    sendMidiStudio(86);
+                    returnMessage = {rec};
+                }
+                else printDebugInfo('There is no active recoring that can be stopped', 'warning');
+            }
+            else printDebugInfo('Studio One is not running!', 'error');
             break;
         case 'setMarker':
-            printDebugInfo('Marker will be set', 's1', origin);
-            sendMidiStudio(87);
-            marker++;
-            returnMessage = {marker};
+            if(await s1Active()){
+                printDebugInfo('Marker will be set', 's1', origin);
+                sendMidiStudio(87);
+                marker++;
+                returnMessage = {marker};
+            }
+            else printDebugInfo('Studio One is not running!', 'error');
             break;
         case 'setEndMarker': 
-            if(!rec){
-                printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
-                sendMidiStudio(90);
-            } else { printDebugInfo('There is currently an active recording', 'warning'); }
+            if(await s1Active()){
+                if(!rec){
+                    printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
+                    sendMidiStudio(90);
+                }
+                else printDebugInfo('There is currently an active recording', 'warning');
+            }
+            else printDebugInfo('Studio One is not running!', 'error');
             break;
         case 'normalize':
-            if(!rec){
-                printDebugInfo('Normalizing Effect will be started', 's1', origin);
-                sendMidiStudio(88);
-            } else { printDebugInfo('There is currently an active recording', 'warning'); }
+            if(await s1Active()){
+                if(!rec){
+                    printDebugInfo('Normalizing Effect will be started', 's1', origin);
+                    sendMidiStudio(88);
+                }
+                else printDebugInfo('There is currently an active recording', 'warning');
+            }
+            else printDebugInfo('Studio One is not running!', 'error');
             break;
         case 'exportAudio':
-            if(!rec) {
-                printDebugInfo('Exporting Process will be started', 's1', origin);
-                sendMidiStudio(89);
-                if(autoExport) callS1Export();
-            } else { printDebugInfo('There is currently an active recording', 'warning'); }
+            if(await s1Active()){
+                if(!rec) {
+                    printDebugInfo('Exporting Process will be started', 's1', origin);
+                    sendMidiStudio(89);
+                    if(autoExport) callS1Export();
+                }
+                else printDebugInfo('There is currently an active recording', 'warning');
+            }
+            else printDebugInfo('Studio One is not running!', 'error');
             break;
         
         case 'bindPresenter': 
@@ -198,9 +231,32 @@ function handleAction (url, origin){
     if (origin == 'Debug') return returnJSONdata(); 
     else return returnMessage;
 }
+/**
+ * This function implements a constant feedback for Companion to get the recording status and marker count
+ * @param  {object} url
+ * the URL that was triggered
+ */
+function handleCompanionFeedback(url) {
+    //parses the url to contain only the querystring-part of 'feedback'
+    let action = url_parse(url, true).query.feedback;
+    let returnMessage = '';
 
+    switch(action) {
+        case 'recStatus':
+            returnMessage = {rec};
+            break;
+        case 'markerCount':
+            returnMessage = {marker};
+            break;
+        default:
+            printDebugInfo('The requested feedback does not exist or can not be parsed!', 'error');
+            returnMessage =  {};
+            break;
+    }
+    return returnMessage;
+}
 
-function handleCallback(url){
+function handleAHKCallback(url){
     let query = url_parse(url, true).query
     let state = (query.state === 'true')
     switch(query.program){
@@ -276,6 +332,8 @@ function returnJSONdata(){
         'latestAction': latestAction, 
         'deactivateMidi': deactivateMidi, 
         'deactivateAutoExport': !autoExport, 
-        'MidiOutput': midiName
+        'MidiOutput': midiOutName,
+        'MidiInput': midiInName,
+
     };
 }
