@@ -80,6 +80,9 @@ For the server to function correctly and get the current recording status, you n
 The plan is to eventually move the MIDI-Output from a physical to a virtual Port. Maybe with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtual midi applications.
 
 - program Status for midi2presenter_startup.ahk
+- list for possible requests with http2midi
+- implement triggers in Companion
+- move Midi-stuff to separate js file
 
 ## Developer
 
