@@ -105,11 +105,19 @@
                         <div class="switch">
                             <input type="checkbox" id="switchMidi">
                             <span class="slider round"></span>
-                      </div></td>
+                    </div></td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="text" id="midiOutput"  class="status-text" readonly>
+                        <input type="text" id="midiOutput" class="status-text" readonly>
+                    </td> 
+                </tr>
+                <tr>
+                    <td colspan="2">MIDI Input:<td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" id="midiInput" class="status-text" readonly>
                     </td> 
                 </tr>
             </table>
@@ -164,6 +172,7 @@
     function parseDataToElements(data){
         document.getElementById('markerCount').value = data.markerCount;
         document.getElementById('midiOutput').value = data.MidiOutput;
+        document.getElementById('midiInput').value = data.MidiInput;
 
         // Handling the Recording Status with color-coding
         if(data.recStatus == true) {
