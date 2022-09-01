@@ -84,6 +84,7 @@ The plan is to eventually move the MIDI-Output from a physical to a virtual Port
 - program Status for midi2presenter_startup.ahk
 - move Midi-stuff to separate js file
 - get current Presenter status
+- describe how to compile the application to an .exe
 
 ## Developer
 
