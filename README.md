@@ -8,16 +8,18 @@ The MIDI signal controls the Recording DAW (Digital Audio Workstation), in this 
 The basic idea is to press a button on an Elgato Streamdeck running [Companion](https://github.com/bitfocus/companion). It sends an HTTP-Request to the computer running Studio One and Presenter for audio recording and visuals. There the MIDI signal gets created and input into the programs.
 
 In our case, the MIDI signal gets sent through an audio interface that supports midi. That allows us to create and get the MIDI commands on one Laptop via hardware and no additional software.
-However it would be smarter to use a MIDI-Loopback adapter like [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) from Tobias Erichson.
-In a [future version of this software](#future_plans), I want to eliminate the need for separate soft- or hardware by creating my own in software MIDI-Loopback.
+However, it would be smarter to use a MIDI-Loopback adapter like [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) from Tobias Erichson.
+In a future version of this software, I want to eliminate the need for separate soft- or hardware by creating my own in software MIDI-Loopback.
 
 ## How it works
 
-The already mentioned concept is that the Webserver gets an HTTP-Request looking like that:
+The already mentioned concept is that the Webserver gets an HTTP-Request looking something like that:
 
 ```url
-http://localhost:8004/send/?action=*myaction*
+http://localhost:8010/send/?action=*myaction*
 ```
+
+For all commands check the [Command-list](./command_list.md).
 
 The Webserver then outputs a normal MIDI-CC-Signal `CC = Control-Change` looking something like that but in hex for Studio One:
 
@@ -80,9 +82,8 @@ For the server to function correctly and get the current recording status, you n
 The plan is to eventually move the MIDI-Output from a physical to a virtual Port. Maybe with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtual midi applications.
 
 - program Status for midi2presenter_startup.ahk
-- list for possible requests with http2midi
-- implement triggers in Companion
 - move Midi-stuff to separate js file
+- get current Presenter status
 
 ## Developer
 
