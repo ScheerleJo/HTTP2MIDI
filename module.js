@@ -11,6 +11,7 @@ const VERSION = config.get('application.version');
 var midiOutput;
 var midiInput;
 
+let activeStudioOne = false;
 let deactivateMidi = false;
 // let deactivateMidiInput = false;
 let autoExport = false;
@@ -29,7 +30,8 @@ module.exports = {
     handleAction,
     handleAHKCallback,
     handleCompanionFeedback,
-    killMidiOutput
+    killMidiOutput,
+    s1Active
 }
 
 // This is still temporary until I figure out something better xD
@@ -116,6 +118,7 @@ async function s1Active(){
     if(list.length > 0) return true;
     else return false;
 }
+
 /**
  * Toggle the corresponding action to the input action in the querystring
  * @param  {object} url
@@ -128,74 +131,90 @@ async function handleAction (url, origin){
     let action = url_parse(url, true).query.action;
     switch (action){
         case 'startRec':
-            if(await s1Active()){
-                if(!rec){
-                    printDebugInfo('Recording will be started', 's1', origin);
-                    sendMidiStudio(85);
-                    marker = 0;
-                    returnMessage = {rec};
-                }
-                else printDebugInfo('There is currently an active recoring', 'warning'); 
+            if(!activeStudioOne){
+                printDebugInfo('Studio One is not running!', 'error');
+                break;
             }
-            else printDebugInfo('Studio One is not running!', 'error');
-            break;
-            case 'stopRec': 
-            if(await s1Active()){
-                if(rec){
-                    printDebugInfo('Recording will be stopped', 's1', origin);
-                    sendMidiStudio(86);
-                    returnMessage = {rec};
-                }
-                else printDebugInfo('There is no active recoring that can be stopped', 'warning');
+            if(rec){
+                printDebugInfo('There is currently an active recoring', 'warning');
+                break;
             }
-            else printDebugInfo('Studio One is not running!', 'error');
+            printDebugInfo('Recording will be started', 's1', origin);
+            sendMidiStudio(85);
+            marker = 0;
+            returnMessage = {rec};
             break;
+
+        case 'stopRec': 
+            if(!activeStudioOne){
+                printDebugInfo('Studio One is not running!', 'error');
+                break;
+            }
+            if(!rec){
+                printDebugInfo('There is currently no active recoring', 'warning');
+                break;
+            }
+            printDebugInfo('Recording will be stopped', 's1', origin);
+            sendMidiStudio(86);
+            returnMessage = {rec};
+            break;
+
         case 'setMarker':
-            if(await s1Active()){
-                printDebugInfo('Marker will be set', 's1', origin);
-                sendMidiStudio(87);
-                marker++;
-                returnMessage = {marker};
+            if(!activeStudioOne){
+                printDebugInfo('Studio One is not running!', 'error');
+                break;
             }
-            else printDebugInfo('Studio One is not running!', 'error');
+            printDebugInfo('Marker will be set', 's1', origin);
+            sendMidiStudio(87);
+            marker++;
+            returnMessage = {marker};
             break;
         case 'setEndMarker': 
-            if(await s1Active()){
-                if(!rec){
-                    printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
-                    sendMidiStudio(90);
-                }
-                else printDebugInfo('There is currently an active recording', 'warning');
+            if(!activeStudioOne){
+                printDebugInfo('Studio One is not running!', 'error');
+                break;
             }
-            else printDebugInfo('Studio One is not running!', 'error');
+            if(rec){
+                printDebugInfo('There is currently an active recoring', 'warning');
+                break;
+            }
+            printDebugInfo('Markers will be set correctly to recording length', 's1', origin);
+            sendMidiStudio(90);
             break;
         case 'normalize':
-            if(await s1Active()){
-                if(!rec){
-                    printDebugInfo('Normalizing Effect will be started', 's1', origin);
-                    sendMidiStudio(88);
-                }
-                else printDebugInfo('There is currently an active recording', 'warning');
+            if(!activeStudioOne){
+                printDebugInfo('Studio One is not running!', 'error');
+                break;
             }
-            else printDebugInfo('Studio One is not running!', 'error');
+            if(rec){
+                printDebugInfo('There is currently an active recording', 'warning');
+                break;
+            }
+            printDebugInfo('Normalizing Effect will be started', 's1', origin);
+            sendMidiStudio(88);
             break;
         case 'exportAudio':
-            if(await s1Active()){
-                if(!rec) {
-                    printDebugInfo('Exporting Process will be started', 's1', origin);
-                    sendMidiStudio(89);
-                    if(autoExport) callS1Export();
-                }
-                else printDebugInfo('There is currently an active recording', 'warning');
+            if(!activeStudioOne){
+                printDebugInfo('Studio One is not running!', 'error');
+                break;
             }
-            else printDebugInfo('Studio One is not running!', 'error');
+            if(rec){
+                printDebugInfo('There is currently an active recording', 'warning');
+                break;
+            }
+            printDebugInfo('Exporting Process will be started', 's1', origin);
+            sendMidiStudio(89);
+            if(autoExport) callS1Export();
             break;
         
         case 'bindPresenter': 
-            if(!bindPresenter){     // Callable only when Presenter isn't bound
-                printDebugInfo('MidiOutput will be bound to Presenter', 'presenter');
-                callPresenterStartup();
-            } else { printDebugInfo('Presenter is already bound', 'error'); }
+            if(bindPresenter) {
+                printDebugInfo('Presenter is already bound', 'error'); 
+                break;   
+            }
+            // Callable only when Presenter isn't bound
+            printDebugInfo('MidiOutput will be bound to Presenter', 'presenter');
+            callPresenterStartup();
             break;
         case 'changeItem': 
             printDebugInfo('Item Selection will be changed', 'presenter', origin);
@@ -227,6 +246,7 @@ async function handleAction (url, origin){
             break;
         default: printDebugInfo('Action not detected! Error!', 'error'); break;
     }
+    await s1Active();
     if(action != 'debugStartup') latestAction = action;
     if (origin == 'Debug') return returnJSONdata(); 
     else return returnMessage;

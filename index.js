@@ -8,7 +8,7 @@ const app = express();
     first edit: 08.02.2022
 */
 
-//#region PreStartup Things
+//#region Startup Things
 lib.printDebugInfo(`HTTP2MIDI ${lib.VERSION}`, 'info');
 lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\n Trying to start the server...\n', 'info');
 
@@ -30,6 +30,7 @@ app.use(express.static(dir + '/scripts'));
 
 // Load the Midi-config and start Midi-Ports
 lib.loadConfig();
+lib.s1Active();
 //#endregion
 
 //#region RequestHandlers
