@@ -29,8 +29,8 @@ app.use(express.static(dir + '/views/images'));
 app.use(express.static(dir + '/scripts'));
 
 // Load the Midi-config and start Midi-Ports
-lib.loadConfig();
-lib.s1Active();
+lib.loadConfig(); 
+lib.s1StartUpState();
 //#endregion
 
 //#region RequestHandlers

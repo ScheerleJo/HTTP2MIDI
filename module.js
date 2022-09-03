@@ -31,7 +31,9 @@ module.exports = {
     handleAHKCallback,
     handleCompanionFeedback,
     killMidiOutput,
-    s1Active
+    s1Active,
+    activeStudioOne,
+    s1StartUpState
 }
 
 // This is still temporary until I figure out something better xD
@@ -115,10 +117,14 @@ function killMidiOutput(){
 
 async function s1Active(){
     var list = await find('name', 'Studio One');
-    if(list.length > 0) return true;
-    else return false;
+    if(list.length > 0)  activeStudioOne = true;
+    else activeStudioOne = false;
 }
 
+async function s1StartUpState(){
+    await s1Active()
+    printDebugInfo(`Studio One State: ${activeStudioOne}`, 'debug');
+}
 /**
  * Toggle the corresponding action to the input action in the querystring
  * @param  {object} url
