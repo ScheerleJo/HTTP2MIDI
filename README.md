@@ -94,6 +94,7 @@ The plan is to eventually move the MIDI-Output from a physical to a virtual Port
 - create Installer to automatically update from latest Release and install all necessary stuff in the beginning
 - Move debug-Helper to swagger or something equivalent
 - optimize file structure
+- make a Rework for generic use to add to Companion as official Package
 
 ## Developer
 
