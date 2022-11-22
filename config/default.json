@@ -1,6 +1,6 @@
 {
     "application": {
-        "version": "v1.3.1"
+        "version": "v1.3.2.2"
     },
     "server": {
         "port": 8010,
@@ -17,5 +17,5 @@
     "original Name": { 
         "name": "QUAD-CAPTURE"
     },
-    "autoExport": false    
+    "autoExport": false
 }

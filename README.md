@@ -11,6 +11,8 @@ In our case, the MIDI signal gets sent through an audio interface that supports 
 However, it would be smarter to use a MIDI-Loopback adapter like [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) from Tobias Erichson.
 In a future version of this software, I want to eliminate the need for separate soft- or hardware by creating my own in software MIDI-Loopback.
 
+! The attribute "original Name" is just for me, so I dont have to look up the original Name of our local MIDI-Interface :D
+
 ## How it works
 
 The already mentioned concept is that the Webserver gets an HTTP-Request looking something like that:
@@ -77,6 +79,10 @@ For the configuration in Studio-One, you have to follow two main steps.
 First, you create a "Control Surface" as a MIDI input Listener. There you select the midi input you want to listen on.
 For the server to function correctly and get the current recording status, you need to set up a new instrument and select the MIDI output you have entered in the config file for http2midi. You also need to activate at least one of the midi channels for Studio-One to send the information.
 
+## Your Own Customization
+
+Coming Soon!
+
 ## Future Plans
 
 The plan is to eventually move the MIDI-Output from a physical to a virtual Port. Maybe with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtual midi applications.
@@ -85,6 +91,9 @@ The plan is to eventually move the MIDI-Output from a physical to a virtual Port
 - move Midi-stuff to separate js file
 - get current Presenter status
 - describe how to compile the application to an .exe
+- create Installer to automatically update from latest Release and install all necessary stuff in the beginning
+- Move debug-Helper to swagger or something equivalent
+- optimize file structure
 
 ## Developer
 

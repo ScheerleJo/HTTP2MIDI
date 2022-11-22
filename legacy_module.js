@@ -4,14 +4,10 @@ DocumentType = module;
 const midi = require('easymidi');
 const url_parse = require('url-parse');
 const execFile = require('child_process').execFile;
-
-//!Temporarily deactivated
-// const find = require('find-process');
-
+const find = require('find-process');
 const config = require('config');
 const PORT = config.get('server.port');
 const VERSION = config.get('application.version');
-
 var midiOutput;
 var midiInput;
 
@@ -35,14 +31,14 @@ module.exports = {
     handleAHKCallback,
     handleCompanionFeedback,
     killMidiOutput,
+    s1Active,
     activeStudioOne,
     s1StartUpState
 }
 
 // This is still temporary until I figure out something better xD
-    // midiInName = config.get('midiInputConfig.name');
-    // midiInput = new midi.Input(midiInName);
-    // const FEEDBACK = config.get('application.midi-input-feedback');
+midiInName = config.get('midiInputConfig.name');
+midiInput = new midi.Input(midiInName);
 
 /**
  * Function to bind the MIDI-Input to Presenter.
@@ -63,15 +59,10 @@ function callS1Export() {
  * Useful, when programming and testing!
  */
 function loadConfig(){
-    // midiInName = config.get('midiInputConfig.name');
+    midiInName = config.get('midiInputConfig.name');
     midiOutName = config.get('midiOutputConfig.name');
-    var inputConfig = config.get('midiInputConfig.active');
 
-    //! For now just to disable the whole Input tracking:
-    inputConfig == false;
-
-
-    if(inputConfig == false){
+    if(config.get('midiInputConfig.active') == false){
         // deactivateMidiInput = true;
         printDebugInfo('MIDI-Input is disabled. Check config/default.json to activate!', 'warning');
     } else {
@@ -125,27 +116,15 @@ function killMidiOutput(){
 }
 
 async function s1Active(){
-    //!Temporarily deactivated
-    activeStudioOne = true;
-    // var list = await find('name', 'Studio One');
-    // if(list.length > 0)  activeStudioOne = true;
-    // else activeStudioOne = false;
-}
-
-//! Not functioning yet
-async function presenterActive(){
-    //!Temporarily deactivated
-    activeStudioOne = true;
-    // var list = await find('name', 'Studio One');
-    // if(list.length > 0)  activeStudioOne = true;
-    // else activeStudioOne = false;
+    var list = await find('name', 'Studio One');
+    if(list.length > 0)  activeStudioOne = true;
+    else activeStudioOne = false;
 }
 
 async function s1StartUpState(){
     await s1Active()
     printDebugInfo(`Studio One State: ${activeStudioOne}`, 'debug');
 }
-
 /**
  * Toggle the corresponding action to the input action in the querystring
  * @param  {object} url
@@ -168,10 +147,6 @@ async function handleAction (url, origin){
             }
             printDebugInfo('Recording will be started', 's1', origin);
             sendMidiStudio(85);
-
-            //!Temporarily added
-            rec = true;
-
             marker = 0;
             returnMessage = {rec};
             break;
@@ -187,10 +162,6 @@ async function handleAction (url, origin){
             }
             printDebugInfo('Recording will be stopped', 's1', origin);
             sendMidiStudio(86);
-            
-            //!Temporarily added
-            rec = false;
-
             returnMessage = {rec};
             break;
 
@@ -282,12 +253,10 @@ async function handleAction (url, origin){
         default: printDebugInfo('Action not detected! Error!', 'error'); break;
     }
     await s1Active();
-    await presenterActive();
     if(action != 'debugStartup') latestAction = action;
     if (origin == 'Debug') return returnJSONdata(); 
     else return returnMessage;
 }
-
 /**
  * This function implements a constant feedback for Companion to get the recording status and marker count
  * @param  {object} url
@@ -338,9 +307,8 @@ function handleAHKCallback(url){
 //#region Send/Recieve MIDI-Commands
 
 //Get current status of Recording in Studio One
-//!Temporarily deactivated
-// midiInput.on('start', () => rec = true)
-// midiInput.on('stop', () => rec = false)
+midiInput.on('start', () => rec = true)
+midiInput.on('stop', () => rec = false)
 
 /**
  * Sending ControlChange Commands on MIDI-Channel 1
