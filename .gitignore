@@ -1,3 +1,5 @@
 node_modules/
-views/latestInfo.json
+
 updates.md
+legacy_module.js
+config/swagger.json

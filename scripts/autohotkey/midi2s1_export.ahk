@@ -13,7 +13,7 @@ if (varStudio != 0){
     SendInput, C:\AktuellerGodi
     Send, {Enter}
     Loop, 7 { 
-       Send, {Tab} 
+        Send, {Tab} 
     }
     Send, {Enter}
     Sleep, 50

@@ -3,17 +3,14 @@ DocumentType = module;
 
 const midi = require('easymidi');
 const url_parse = require('url-parse');
-const execFile = require('child_process').execFile;
 
 //!Temporarily deactivated
 // const find = require('find-process');
 
-const config = require('config');
-const PORT = config.get('server.port');
-const VERSION = config.get('application.version');
+
 
 var midiOutput;
-var midiInput;
+// var midiInput;
 
 let activeStudioOne = false;
 let deactivateMidi = false;
@@ -27,8 +24,6 @@ let midiInName = '';
 let midiOutName = '';
 
 module.exports = {
-    PORT,
-    VERSION,
     loadConfig,
     printDebugInfo,
     handleAction,
@@ -44,19 +39,7 @@ module.exports = {
     // midiInput = new midi.Input(midiInName);
     // const FEEDBACK = config.get('application.midi-input-feedback');
 
-/**
- * Function to bind the MIDI-Input to Presenter.
- * Due to some bullshit, the MIDI-connection is sometimes lost, when you open Presenter.
- */
-function callPresenterStartup() {
-    execFile('./scripts/midi2presenter_startup.exe');  
-}
-/**
- * function to call the AutoExportScript.
- */
-function callS1Export() {
-    execFile('./scripts/midi2s1_export.exe');
-}
+
 /**
  * Load the Config file and parse the fetched information.
  * Handling Midi-Output and AutoExport.
@@ -134,11 +117,7 @@ async function s1Active(){
 
 //! Not functioning yet
 async function presenterActive(){
-    //!Temporarily deactivated
-    activeStudioOne = true;
-    // var list = await find('name', 'Studio One');
-    // if(list.length > 0)  activeStudioOne = true;
-    // else activeStudioOne = false;
+
 }
 
 async function s1StartUpState(){

@@ -1,21 +1,18 @@
 {
     "application": {
-        "version": "v1.3.2.2"
+        "version": "v1.4"
     },
     "server": {
         "port": 8010,
         "host": "localhost"
     },
     "midiOutputConfig": {
-        "name": "http2midi",
+        "name": "http2midiOut",
         "active": true
     },
     "midiInputConfig": {
-        "name": "http2midi", 
+        "name": "http2midiIn", 
         "active": true
-    },
-    "original Name": { 
-        "name": "QUAD-CAPTURE"
     },
     "autoExport": false
 }
