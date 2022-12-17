@@ -35,8 +35,8 @@ module.exports = {
 }
 
 // This is still temporary until I figure out something better xD
-    // midiInName = config.get('midiInputConfig.name');
-    // midiInput = new midi.Input(midiInName);
+    //midiInName = config.get('midiInputConfig.name');
+    midiInput = new midi.Input(midiInName);
     // const FEEDBACK = config.get('application.midi-input-feedback');
 
 
@@ -318,7 +318,7 @@ function handleAHKCallback(url){
 
 //Get current status of Recording in Studio One
 //!Temporarily deactivated
-// midiInput.on('start', () => rec = true)
+/midiInput.on('start', () => rec = true)
 // midiInput.on('stop', () => rec = false)
 
 /**
