@@ -2,6 +2,7 @@ const execFile = require('child_process').execFile;
 const config = require('config');
 const PORT = config.get('server.port');
 const VERSION = config.get('application.version');
+const midi = require('./midi');
 
 
 async function loadStartupConfig() {
@@ -24,4 +25,18 @@ function callPresenterStartup() {
  */
 function callS1Export() {
     execFile('./scripts/autohotkey/midi2s1_export.ahk');
+}
+
+async function startupInput() {
+    let inputConfig = config.get('MidiInputConfig');
+    //set bool wether the input is enabled or disabled in the midi.js file to be able to activate the Input
+    midi.midiInActive = config.get(inputConfig.active);
+    await midi.instantiateMidiInput(config.get(inputConfig.name));
+    
+}
+async function startupOutput() {
+    let outputConfig = config.get('MidiOutputConfig');
+    //set bool wether the input is enabled or disabled in the midi.js file to be able to activate the Input
+    midi.midiOutActive = config.get(outputConfig.active);
+    await midi.instantiateMidiOutput(config.get(outputConfig.name));
 }
