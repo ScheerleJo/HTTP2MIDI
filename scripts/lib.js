@@ -1,13 +1,20 @@
 const execFile = require('child_process').execFile;
 const config = require('config');
-const PORT = config.get('server.port');
-const VERSION = config.get('application.version');
+// const PORT = config.get('server.port');
+// const VERSION = config.get('application.version');
 const midi = require('./midi');
+
+exports = {
+    callPresenterStartup,
+    loadStartupConfig,
+    printDebugInfo,
+    checkAutoExport
+}
 
 
 async function loadStartupConfig() {
 
-    await checkAutoExport();
+    // await checkAutoExport();
 
     await startupInput();
 
@@ -39,4 +46,23 @@ async function startupOutput() {
     //set bool wether the input is enabled or disabled in the midi.js file to be able to activate the Input
     midi.midiOutActive = config.get(outputConfig.active);
     await midi.instantiateMidiOutput(config.get(outputConfig.name));
+}
+
+async function checkAutoExport() {
+    let autoExport = await config.get('autoExport');
+    if (autoExport == true){
+        callS1Export(); 
+    }
+}
+
+function printDebugInfo(text, state, origin){
+    switch(state){
+        case 's1': console.log('\x1b[34m', `${origin}2s1: ${text}`); break;                 // Blue
+        case 'presenter': console.log('\x1b[32m', `${origin}2presenter: ${text}`); break;   // Green
+
+        case 'info': console.log('\x1b[37m', `Info: ${text}`); break;                       // White
+        case 'warning': console.log('\x1b[33m', `Warning: ${text}`); break;                 // Orange
+        case 'error': console.log('\x1b[31m', `Error: ${text}`); break;                     // Red
+        case 'debug': console.log('\x1b[35m', `Debug: ${text}`); break;                     // Purple
+    }
 }

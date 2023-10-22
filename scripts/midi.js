@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-global-assign
 DocumentType = module;
 
-const midi = require('easymidi');
+const midiIO = require('easymidi');
 
 
 
@@ -27,7 +27,7 @@ function instantiateMidiInput(midiInName) {
     if (midiInActive == false) {
         return;
     }
-    midiInput = new midi.Input(midiInName);
+    midiInput = new midiIO.Input(midiInName);
 }
 
 
@@ -35,7 +35,7 @@ function instantiateMidiOutput(midiOutName) {
     if (midiOutActive == false) {
         return;
     }
-    midiOutput = new midi.Output(midiOutName);
+    midiOutput = new midiIO.Output(midiOutName);
 }
 
 
