@@ -50,8 +50,6 @@ class MidiOutput {
     }
 }
 
-
-
 class MidiInput {
     constructor() {
         this.nconf = require('nconf');

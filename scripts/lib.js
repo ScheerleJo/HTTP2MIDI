@@ -55,7 +55,7 @@ async function checkAutoExport() {
     }
 }
 
-function printDebugInfo(text, state){
+function printDebugInfo(text, state, origin){
     switch(state){
         case 's1': console.log('\x1b[34m', `${origin}2s1: ${text}`); break;                 // Blue
         case 'presenter': console.log('\x1b[32m', `${origin}2presenter: ${text}`); break;   // Green

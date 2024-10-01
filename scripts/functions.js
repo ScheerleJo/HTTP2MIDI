@@ -69,7 +69,6 @@ class PresenterFunction {
         lib.printDebugInfo('Next Slide will be executed', 'presenter');
         midi.sendMidiPresenter(6);
     }
-
 }
 
 module.exports = { StudioOneFunction, PresenterFunction };
