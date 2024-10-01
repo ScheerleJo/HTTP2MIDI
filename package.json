@@ -4,8 +4,7 @@
   "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI",
   "main": "index.js",
   "scripts": {
-    "startup": "node index.js",
-    "dev": "nodemon index.js"
+    "startup": "node index.js"
   },
   "bin": {
     "http2midi": "./index.js"
@@ -27,13 +26,13 @@
     "easymidi": "^2.1.0",
     "express": "^4.17.3",
     "find-process": "^1.4.7",
+    "nconf": "^0.12.1",
     "pkg": "^5.6.0",
     "swagger-ui-express": "^4.6.0",
     "url-parse": "^1.5.4"
   },
   "devDependencies": {
-    "eslint": "^8.15.0",
-    "nodemon": "^2.0.15"
+    "eslint": "^8.15.0"
   },
   "pkg": {
     "assets": [

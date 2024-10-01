@@ -1,8 +1,6 @@
-const lib = require('./scripts/module');
+const lib = require('./scripts/lib');
 const cors = require('cors');
 const express = require('express');
-const swagger = require('swagger-ui-express');
-const swagger_config = require('./config/swagger.json');
 const app = express();
 
 /*  This Webserver, written by ScheerleJo aka. Josia Scheerle,  makes it possible to accept HTTP-Requests and output MIDI
@@ -17,19 +15,16 @@ lib.printDebugInfo('Webserver for communication between Companion and Studio One
 // eslint-disable-next-line no-undef
 let dir = __dirname;
 
-let corsOptions = {
+// Options for the Debug Helper to function properly
+app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200,
     methods: "GET, PUT, POST"
-}
-
-// Options for the Debug Helper to function properly
-app.use(cors(corsOptions));
+}));
 app.use(express.static(dir));
-app.use(express.static(dir + '/views'));
-app.use(express.static(dir + '/views/images'));
-app.use(express.static(dir + '/scripts'));
-app.use('api/docs', swagger.serve, swagger.setup(swagger_config));
+// app.use(express.static(dir + '/views'));
+// app.use(express.static(dir + '/views/images'));
+// app.use(express.static(dir + '/scripts'));
 
 // Load the Midi-config and start Midi-Ports
 lib.loadConfig(); 
