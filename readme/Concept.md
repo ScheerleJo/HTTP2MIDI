@@ -14,6 +14,4 @@ functions.js fpr all action triggering and handling stuff
 
 - Rework for debug-helper.
   
-  - switch to swagger
-  - make a windows gui for more control and insights
-  - simpler online tool for testing use
+  - switch to swagger or similar
