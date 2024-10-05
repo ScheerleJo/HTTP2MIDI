@@ -2,14 +2,12 @@ const midiIO = require('easymidi');
 
 class MidiOutput {
     constructor() {
-        this.nconf = require('nconf');
-        this.nconf.argv().env().file({ file: '../server_config.json' });
-        this.midiOutConfig = this.nconf.get('midiOutputConfig');
-    }
-
-    instantiateMidiOutput() {
-        if (!this.midiOutConfig.active) return;
-        this.midiOutput = new midiIO.Output(this.midiOutConfig.name);
+        this.config = new (require('./config'))();
+        this.midiOutConfig = this.config.get('midiOutputConfig');
+        if (this.midiOutConfig.active){ 
+            this.midiOutput = new midiIO.Output(this.midiOutConfig.name);
+        } 
+        return this;
     }
 
     closeMidiOutput() {
@@ -52,18 +50,17 @@ class MidiOutput {
 
 class MidiInput {
     constructor() {
-        this.nconf = require('nconf');
-        this.nconf.argv().env().file({ file: '../server_config.json' });
-        this.midiInConfig = this.nconf.get('midiInputConfig');
+        this.config = new (require('./config'))();
+        this.midiInConfig = this.config.get('midiInputConfig');
+        if (this.midiInConfig.active) {
+            this.midiInput = new midiIO.Input(this.midiInConfig.name);
+        }
+        return this;
     }
 
-    instantiateMidiInput() {
-        if (!this.midiInConfig.active) return;
-        this.midiInput = new midiIO.Input(this.midiInConfig.name);
-    }
     closeMidiInput() {
         this.midiInput.close();
     }
 }
 
-exports = {MidiOutput, MidiInput}
+module.exports = {MidiOutput, MidiInput}
