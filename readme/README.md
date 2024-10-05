@@ -87,14 +87,10 @@ Coming Soon!
 
 The plan is to eventually move the MIDI-Output from a physical to a virtual Port. Maybe with the help of [Tobias Erichsen](https://www.tobias-erichsen.de/), the creator of various virtual midi applications.
 
-- program Status for midi2presenter_startup.ahk
-- move Midi-stuff to separate js file
-- get current Presenter status
 - describe how to compile the application to an .exe
 - create Installer to automatically update from latest Release and install all necessary stuff in the beginning
-- Move debug-Helper to swagger or something equivalent
-- optimize file structure
-- make a Rework for generic use to add to Companion as official Package
+- handle midi-input to search for start/stop
+- Write better Documentation
 
 ## Developer
 
