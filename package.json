@@ -21,22 +21,20 @@
   "author": "Josia Scheerle",
   "license": "MIT",
   "dependencies": {
-    "config": "^3.3.7",
-    "cors": "^2.8.5",
     "easymidi": "^2.1.0",
-    "express": "^4.17.3",
+    "express": "^4.21.0",
     "find-process": "^1.4.7",
     "nconf": "^0.12.1",
     "pkg": "^5.6.0",
-    "swagger-ui-express": "^4.6.0",
-    "url-parse": "^1.5.4"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
     "eslint": "^8.15.0"
   },
   "pkg": {
     "assets": [
-      "views/**/*",
+      "config/**/*.js",
       "scripts/**/*"
     ],
     "targets": [
