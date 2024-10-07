@@ -19,6 +19,7 @@ let input = new midi.MidiInput();
 let output = new midi.MidiOutput();
 const studioOne = new functions.StudioOneFunction(output);
 const presenter = new functions.PresenterFunction(output); 
+input.activateMidiListener();
 // console.debug(`Debug: Midi-Input: ${input.midiInput.name}`);
 // console.debug(`Debug: Midi-Output: ${output.midiOutput.name}`);
 //#endregion

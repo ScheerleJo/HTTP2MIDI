@@ -61,6 +61,15 @@ class MidiInput {
     closeMidiInput() {
         this.midiInput.close();
     }
+
+    activateMidiListener() {
+        this.midiInput.on('sysex', (msg) => {
+            console.log(msg);
+        });
+        this.midiInput.on('clock', (msg) => {
+            console.log(msg);
+        });
+    }
 }
 
 module.exports = {MidiOutput, MidiInput}
