@@ -21,7 +21,7 @@ The already mentioned concept is that the Webserver gets an HTTP-Request which y
 
 The Webserver then outputs a normal MIDI-CC-Signal `CC = Control-Change` looking something like that but in hex for Studio One:
 
-```json
+```js
 {
   channel: 1,
   controller: 0-127,
@@ -31,7 +31,7 @@ The Webserver then outputs a normal MIDI-CC-Signal `CC = Control-Change` looking
 
 and the following sample for Presenter:
 
-```json
+```js
 {
   note: 1-6,
   value: 127,
