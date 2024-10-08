@@ -19,17 +19,17 @@ class MidiOutput {
      * @param  {number} cc
      * Number of the midi CC-Command; 7-Bit Numbers
      */
-    sendMidiStudioOne(cc) {
+    sendMidiCC(cc, channel = 1) {
         this.midiOutput.send("cc", {
             controller: cc,
             value: 127,
-            channel: 1
+            channel: channel
         });
         setTimeout(() => {
             this.midiOutput.send("cc", {
                 controller: cc,
                 velocity: 0,
-                channel: 1
+                channel: channel
             })
         }, 200);
     }
@@ -39,15 +39,20 @@ class MidiOutput {
      * @param  {number} note
      * Number of midi Note; 7-Bit Numbers 
      */
-    sendMidiPresenter(note) {
+    sendMidiNoteOn(note, channel = 2) {
         this.midiOutput.send("noteon", {
             note: note,
             value: 127,
-            channel: 2
+            channel: channel
         });
     }
 }
 
+
+
+
+
+// Not yet functioning due to some weird behavior of Studio One, which is not sending any MIDI-Data
 class MidiInput {
     constructor() {
         this.config = new (require('./config'))();

@@ -17,11 +17,14 @@ app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.sw
 // Load the Midi-config and start Midi-Ports
 let input = new midi.MidiInput();
 let output = new midi.MidiOutput();
-const studioOne = new functions.StudioOneFunction(output);
-const presenter = new functions.PresenterFunction(output); 
 input.activateMidiListener();
-// console.debug(`Debug: Midi-Input: ${input.midiInput.name}`);
-// console.debug(`Debug: Midi-Output: ${output.midiOutput.name}`);
+
+
+const studioOne = new functions.StudioOneFunction(output);
+const presenter = new functions.PresenterFunction(output);
+
+// Call your new function class here
+const myFunctions = new functions.myClass(output);
 //#endregion
 
 
@@ -62,6 +65,15 @@ app.get('/get', (req, res) => {
     res.json(studioOne["sendCompanion" + (req.query.feedback).charAt(0).toUpperCase()]);
 });
 
+
+// Your own branch for custom functions
+app.get('/myFunctions', (req, res) => {
+    // Add your own function here
+    res.json(myFunctions[req.query.action]);
+});
+
+
+
 /**
  * builds the Webserver
  */
@@ -69,7 +81,3 @@ app.listen(config.get('server:port'), () =>{
     console.log(`Server running on Port ${config.get('server:port')}`);
 });
 //#endregion
-
-
-
-

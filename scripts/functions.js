@@ -20,7 +20,7 @@ class PresenterFunction {
     toFirstItem(status) {
         if(this.checkPresenter('toFirstItem', status)) {
             console.info('Presenter: Item Selection will be changed to first Item');
-            this.midiOut.sendMidiPresenter(0);
+            this.midiOut.sendMidiNoteOn(0);
             return 200;
         }
         return 404;        
@@ -44,7 +44,7 @@ class PresenterFunction {
     previousItem(status) {
         if(this.checkPresenter('previousItem', status)) {
             console.info('Presenter: Prevoius Item will be executed');
-            this.midiOut.sendMidiPresenter(2);
+            this.midiOut.sendMidiNoteOn(2);
             return 200;
         }
         return 404;  
@@ -68,7 +68,7 @@ class PresenterFunction {
     nextItem(status) {
         if(this.checkPresenter('nextItem', status)) {
             console.info('Presenter: Next Item will be executed');
-            this.midiOut.sendMidiPresenter(3);
+            this.midiOut.sendMidiNoteOn(3);
             return 200;
         }
         return 404;  
@@ -92,7 +92,7 @@ class PresenterFunction {
     toFirstSlide(status) {
         if(this.checkPresenter('toFirstSlide', status)) {
             console.info('Presenter: Slide Selection will be changed');
-            this.midiOut.sendMidiPresenter(4);
+            this.midiOut.sendMidiNoteOn(4);
             return 200;
         }
         return 404; 
@@ -116,7 +116,7 @@ class PresenterFunction {
     previousSlide(status) {
         if(this.checkPresenter('previousSlide', status)) {
             console.info('Presenter: Prevoius Slide will be executed');
-            this.midiOut.sendMidiPresenter(5);
+            this.midiOut.sendMidiNoteOn(5);
             return 200;
         }
         return 404; 
@@ -140,7 +140,7 @@ class PresenterFunction {
     nextSlide(status) {        
         if(this.checkPresenter('nextSlide', status)) {
             console.info('Presenter: Next Slide will be executed');
-            this.midiOut.sendMidiPresenter(6);
+            this.midiOut.sendMidiNoteOn(6);
             return 200;
         }
         return 404; 
@@ -196,7 +196,7 @@ class StudioOneFunction {
         this.rec = true;
 
         this.marker = 0;
-        this.midiOut.sendMidiStudioOne(85);
+        this.midiOut.sendMidiCC(85);
         return 200;
     }
 
@@ -224,7 +224,7 @@ class StudioOneFunction {
             return 409;
         }
         console.info('S1: Recording will be stopped');
-        this.midiOut.sendMidiStudioOne(86);
+        this.midiOut.sendMidiCC(86);
         //TODO: Check Midi-Input for a "recording-stopped" signal
         this.rec = false;
         return 200;
@@ -250,7 +250,7 @@ class StudioOneFunction {
     setMarker(status) {
         if(!this.checkStudioOne('setMarker', status)) return 404;
         console.info('S1: Marker will be set');
-        this.midiOut.sendMidiStudioOne(87);
+        this.midiOut.sendMidiCC(87);
         this.marker++;
         return 200;
     }
@@ -279,7 +279,7 @@ class StudioOneFunction {
             return 409;
         }
         console.info('S1: Markers will be set correctly to recording length');
-        this.midiOut.sendMidiStudioOne(90);
+        this.midiOut.sendMidiCC(90);
         return 200;
     }
 
@@ -307,7 +307,7 @@ class StudioOneFunction {
             return 409;
         }
         console.info('S1: Normalizing Effect will be started');
-        this.midiOut.sendMidiStudioOne(88);
+        this.midiOut.sendMidiCC(88);
         return 200;
     }
 
@@ -335,7 +335,7 @@ class StudioOneFunction {
             return 409;
         }
         console.info('S1: Exporting Process will be started');
-        this.midiOut.sendMidiStudioOne(89);
+        this.midiOut.sendMidiCC(89);
         return 200;
     }
 
@@ -386,4 +386,30 @@ class StudioOneFunction {
     }
 }
 
-module.exports = { StudioOneFunction, PresenterFunction };
+class myClass {
+    constructor(midiOutput) {
+        this.midiOut = midiOutput;
+    }
+    /**
+     *  @swagger
+     *  /yourOwnClass?action=yourOwnFunction:
+     * get:
+     *     tags: ["YourOwnClass"]
+     *    summary: "Your own function"
+     *   description: "Describe your own function"
+     * responses:
+     *    200:
+     *     description: Your own function has been executed
+     *   404:
+     *    description: Error, because something went wrong
+     */
+    myFunction() {
+
+        // Implement your own function here
+        // you Can also copy this function as a template for your own functions
+        console.info('myClass: Your own function will be executed'); 
+    }
+}
+
+
+module.exports = { StudioOneFunction, PresenterFunction, myClass};
