@@ -8,8 +8,7 @@
         "url": "https://github.com/ScheerleJo/http2midi"
     },
     "server": {
-        "port": 8010,
-        "host": "localhost"
+        "port": 8010
     },
     "midiOutputConfig": {
         "name": "http2midiOut",

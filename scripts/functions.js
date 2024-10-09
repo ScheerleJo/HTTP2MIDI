@@ -393,18 +393,17 @@ class myClass {
     /**
      *  @swagger
      *  /yourOwnClass?action=yourOwnFunction:
-     * get:
-     *     tags: ["YourOwnClass"]
-     *    summary: "Your own function"
-     *   description: "Describe your own function"
-     * responses:
-     *    200:
-     *     description: Your own function has been executed
-     *   404:
-     *    description: Error, because something went wrong
+     *  get:
+     *      tags: ["YourOwnClass"]
+     *      summary: "Your own function"
+     *      description: "Describe your own function"
+     *      responses:
+     *      200:
+     *          description: Your own function has been executed
+     *      404:
+     *          description: Error, because something went wrong
      */
     myFunction() {
-
         // Implement your own function here
         // you Can also copy this function as a template for your own functions
         console.info('myClass: Your own function will be executed'); 

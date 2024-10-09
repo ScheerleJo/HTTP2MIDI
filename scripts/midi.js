@@ -1,13 +1,9 @@
 const midiIO = require('easymidi');
 
 class MidiOutput {
-    constructor() {
-        this.config = new (require('./config'))();
-        this.midiOutConfig = this.config.get('midiOutputConfig');
-        if (this.midiOutConfig.active){ 
-            this.midiOutput = new midiIO.Output(this.midiOutConfig.name);
-        } 
-        return this;
+    constructor(config) {
+        this.midiOutput = new midiIO.Output(config.name);
+        console.log(`MIDI-Output ${config.name} is active`);
     }
 
     closeMidiOutput() {
@@ -48,19 +44,15 @@ class MidiOutput {
     }
 }
 
-
-
-
-
 // Not yet functioning due to some weird behavior of Studio One, which is not sending any MIDI-Data
 class MidiInput {
-    constructor() {
-        this.config = new (require('./config'))();
-        this.midiInConfig = this.config.get('midiInputConfig');
-        if (this.midiInConfig.active) {
-            this.midiInput = new midiIO.Input(this.midiInConfig.name);
+    constructor(config) {
+        if (config.active) {
+            this.midiInput = new midiIO.Input(config.name);
+            console.log(`MIDI-Input ${config.name} is active`);
+        } else {
+            console.log('No MIDI-Input selected. Please check your configuration');
         }
-        return this;
     }
 
     closeMidiInput() {
@@ -68,6 +60,7 @@ class MidiInput {
     }
 
     activateMidiListener() {
+        // Currently not working due to some weird behavior of Studio One and just trying to get some data out of the midi-Input
         this.midiInput.on('sysex', (msg) => {
             console.log(msg);
         });
