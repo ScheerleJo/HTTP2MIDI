@@ -1,83 +1,88 @@
-const lib = require('./module');
-const cors = require('cors');
+const config = new (require('./scripts/config'))();
+
+console.log(`HTTP2MIDI ${config.get('application:version')}`);
+console.log('Webserver for communication between Companion and Studio One\nTrying to start the server...\n');
+
+const feedback = require('./scripts/feedback');
+const functions = require('./scripts/functions');
+const midi = require('./scripts/midi');
+const swagger = require ('./config/swagger');
 const express = require('express');
 const app = express();
 
-/*  This Webserver, written by ScheerleJo aka. Josia Scheerle,  makes it possible to accept HTTP-Requests and output MIDI
-    It is used to control various programs with MIDI like StudioOne and Presenter
-    first edit: 08.02.2022
-*/
+
 
 //#region Startup Things
-lib.printDebugInfo(`HTTP2MIDI ${lib.VERSION}`, 'info');
-lib.printDebugInfo('Webserver for communication between Companion and Studio One\n\n Trying to start the server...\n', 'info');
-
-// eslint-disable-next-line no-undef
-let dir = __dirname;
-
-let corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200,
-    methods: "GET, PUT, POST"
-}
-
-// Options for the Debug Helper to function properly
-app.use(cors(corsOptions));
-app.use(express.static(dir));
-app.use(express.static(dir + '/views'));
-app.use(express.static(dir + '/views/images'));
-app.use(express.static(dir + '/scripts'));
+app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.swaggerSpec));
 
 // Load the Midi-config and start Midi-Ports
-lib.loadConfig(); 
-lib.s1StartUpState();
+let input = new midi.MidiInput(config.get('midiInputConfig'));
+if(config.get('midiInputConfig').active) input.activateMidiListener();
+
+let output = new midi.MidiOutput(config.get('midiOutputConfig'));
+if(!config.get('midiOutputConfig').active) { // Without a Midi-Output, the application is useless
+    console.error('No MIDI-Output selected. Please check your configuration');
+    kill();
+}
+
+const studioOne =  new functions.StudioOneFunction(output);
+const presenter = new functions.PresenterFunction(output);
+const myFunctions = new functions.myClass(output);      // Call your new function class here
 //#endregion
 
+
 //#region RequestHandlers
-app.get('/', (req, res) =>{
-    res.sendFile(dir + '/views/debug-helper.html');
-});
 /**
  * shuts down the Webserver gracefully
- * 
- * !Querystring '/kill' cannot be used differently
  */
 app.get('/kill', (req, res) => {
     res.json({'status':'Shutdown'});
-    lib.printDebugInfo('Application will shut down', 'info')
-    lib.killMidiOutput();
-    this.process.exit();
+    kill()
 });
 /**
- * /send is used to handle the function-calling process
+ * /studioOne?action=... is used to handle the requests from Companion for Studio One
  */
-app.get('/send', (req, res) => {
-    res.json(lib.handleAction(req.url, 'Http'));
+app.get('/studioOne', (req, res) => {
+    if(studioOne[req.query.action]) {
+        let retVal = studioOne[req.query.action](feedback.getStudioOneStatus());
+        res.sendStatus(req.query.src == 'companion' ? 200 : retVal); 
+    } res.sendStatus(404);
+});
+/**
+ * /presenter?action=... is used to handle the requests from Companion for Presenter
+ */
+app.get('/presenter', (req, res) => {
+    if(presenter[req.query.action]) {
+        let retVal = presenter[req.query.action](feedback.getPresenterStatus());
+        res.sendStatus(req.query.src == 'companion' ? 200 : retVal); 
+    } res.sendStatus(404);
 });
 /**
  * /get is used to handle the status requests from Companion for constant updates
  */
 app.get('/get', (req, res) => {
-    res.json(lib.handleCompanionFeedback(req.url, 'Http'));
+    res.json(studioOne["sendCompanion" + (req.query.feedback).charAt(0).toUpperCase()]);
 });
-/**
- * Handle Callbacks from AutoHotkey to determine wehter the scripts were successful
- */
-app.get('/send/callback', (req, res) => {
-    lib.handleAHKCallback(req.url);
-    res.write('');  //Send something to not have an infinite Request
-})
-/**
- * /debug is used to handle the actions made in the Debug-Helper
- */
-app.get('/debug', (req, res) => {
-    res.json(lib.handleAction(req.url, 'Debug'));
+
+
+// branch for your custom functions
+app.get('/myFunctions', (req, res) => {
+    if(myFunctions[req.query.action]) {
+        res.json(myFunctions[req.query.action]);
+    } res.sendStatus(404);
 });
 
 /**
  * builds the Webserver
  */
-app.listen(lib.PORT, function(){        
-    lib.printDebugInfo(` Server running on Port ${lib.PORT}`, 'info');
+app.listen(config.get('server:port'), () =>{        
+    console.log(`Server running on Port ${config.get('server:port')}\n`);
 });
 //#endregion
+
+function kill() {
+    console.warn('Application will shut down');
+    if(input || false) input.closeMidiInput();
+    output.closeMidiOutput();
+    this.process.exit();
+}
