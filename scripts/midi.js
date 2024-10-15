@@ -59,15 +59,9 @@ class MidiInput {
         this.midiInput.close();
     }
 
-    activateMidiListener() {
-        // Currently not working due to some weird behavior of Studio One and just trying to get some data out of the midi-Input
-        this.midiInput.on('sysex', (msg) => {
-            console.log(msg);
-        });
-        this.midiInput.on('clock', (msg) => {
-            console.log(msg);
-        });
+    activateMidiListener(studioOne) {
+        this.midiInput.on("start", studioOne.setRec(true));
+        this.midiInput.on("stop", studioOne.setRec(false));
     }
 }
-
 module.exports = {MidiOutput, MidiInput}

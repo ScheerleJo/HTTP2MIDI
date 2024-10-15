@@ -1,6 +1,6 @@
 {
     "application": {
-        "version": "v1.4",
+        "version": "v1.4.1",
         "name": "http2midi",
         "description": "This Website is to help test and debug the http2midi application. The Webserver itself is for sending Commands from a Streamdeck running Companion. Afterward, it sends Midi Commands to Studio One, the Audio recording software, or Presenter, the well .... presentation software ;).\n\nIf there are any questions about functionality or problems, please let me know.",
         "author": "Josia Scheerle",

@@ -1,5 +1,4 @@
 const config = new (require('./scripts/config'))();
-
 console.log(`HTTP2MIDI ${config.get('application:version')}`);
 console.log('Webserver for communication between Companion and Studio One\nTrying to start the server...\n');
 
@@ -10,14 +9,8 @@ const swagger = require ('./config/swagger');
 const express = require('express');
 const app = express();
 
-
-
 //#region Startup Things
 app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.swaggerSpec));
-
-// Load the Midi-config and start Midi-Ports
-let input = new midi.MidiInput(config.get('midiInputConfig'));
-if(config.get('midiInputConfig').active) input.activateMidiListener();
 
 let output = new midi.MidiOutput(config.get('midiOutputConfig'));
 if(!config.get('midiOutputConfig').active) { // Without a Midi-Output, the application is useless
@@ -28,10 +21,11 @@ if(!config.get('midiOutputConfig').active) { // Without a Midi-Output, the appli
 const studioOne =  new functions.StudioOneFunction(output);
 const presenter = new functions.PresenterFunction(output);
 const myFunctions = new functions.myClass(output);      // Call your new function class here
-//#endregion
+
+let input = new midi.MidiInput(config.get('midiInputConfig'));
+if(config.get('midiInputConfig').active) input.activateMidiListener(studioOne);
 
 
-//#region RequestHandlers
 /**
  * shuts down the Webserver gracefully
  */
@@ -46,7 +40,7 @@ app.get('/studioOne', (req, res) => {
     if(studioOne[req.query.action]) {
         let retVal = studioOne[req.query.action](feedback.getStudioOneStatus());
         res.sendStatus(req.query.src == 'companion' ? 200 : retVal); 
-    } res.sendStatus(404);
+    } else res.sendStatus(404);
 });
 /**
  * /presenter?action=... is used to handle the requests from Companion for Presenter
@@ -55,21 +49,22 @@ app.get('/presenter', (req, res) => {
     if(presenter[req.query.action]) {
         let retVal = presenter[req.query.action](feedback.getPresenterStatus());
         res.sendStatus(req.query.src == 'companion' ? 200 : retVal); 
-    } res.sendStatus(404);
+    } else res.sendStatus(404);
 });
 /**
  * /get is used to handle the status requests from Companion for constant updates
  */
 app.get('/get', (req, res) => {
-    res.json(studioOne["sendCompanion" + (req.query.feedback).charAt(0).toUpperCase()]);
-});
+    let functionName = 'sendCompanion' + req.query.feedback.charAt(0).toUpperCase() + req.query.feedback.slice(1);
+    res.send(studioOne[functionName]());
+}); 
 
 
 // branch for your custom functions
 app.get('/myFunctions', (req, res) => {
     if(myFunctions[req.query.action]) {
         res.json(myFunctions[req.query.action]);
-    } res.sendStatus(404);
+    } else res.sendStatus(404);
 });
 
 /**
@@ -78,7 +73,7 @@ app.get('/myFunctions', (req, res) => {
 app.listen(config.get('server:port'), () =>{        
     console.log(`Server running on Port ${config.get('server:port')}\n`);
 });
-//#endregion
+
 
 function kill() {
     console.warn('Application will shut down');

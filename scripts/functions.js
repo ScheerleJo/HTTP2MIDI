@@ -43,7 +43,7 @@ class PresenterFunction {
      */
     previousItem(status) {
         if(this.checkPresenter('previousItem', status)) {
-            console.info('Presenter: Prevoius Item will be executed');
+            console.info('Presenter: Previous Item will be executed');
             this.midiOut.sendMidiNoteOn(2);
             return 200;
         }
@@ -115,7 +115,7 @@ class PresenterFunction {
      */
     previousSlide(status) {
         if(this.checkPresenter('previousSlide', status)) {
-            console.info('Presenter: Prevoius Slide will be executed');
+            console.info('Presenter: Previous Slide will be executed');
             this.midiOut.sendMidiNoteOn(5);
             return 200;
         }
@@ -165,6 +165,7 @@ class StudioOneFunction {
     constructor(midiOutput) {
         this.midiOut = midiOutput;
         this.rec = false;
+        this.marker = 0;
     }
 
     /**
@@ -191,10 +192,6 @@ class StudioOneFunction {
             return 409;
         }
         console.info('S1: Recording will be started');
-
-        //TODO: Check Midi-Input for a "recording-started" signal
-        this.rec = true;
-
         this.marker = 0;
         this.midiOut.sendMidiCC(85);
         return 200;
@@ -225,8 +222,6 @@ class StudioOneFunction {
         }
         console.info('S1: Recording will be stopped');
         this.midiOut.sendMidiCC(86);
-        //TODO: Check Midi-Input for a "recording-stopped" signal
-        this.rec = false;
         return 200;
     }
 
@@ -366,8 +361,8 @@ class StudioOneFunction {
      *            description: Studio One is not recording
      *  @returns {number} the count of markers in the current recording
      */
-    sendCompainionMarker() {
-        return this.marker;
+    sendCompanionMarkerCount() {
+        return this.marker.toString();
     }
     /**
      * @swagger
@@ -382,7 +377,20 @@ class StudioOneFunction {
      *  @returns {boolean} the status of the current recording
      */
     sendCompanionRecStatus(){
-        return this.rec;
+        return (this.rec).toString();
+    }
+
+    /**
+     * @swagger
+     *  setStatus:
+     *  set:
+     *      tags: ["Feedback"]
+     *      summary: Set the recStatus
+     *      description: Set the status of the recording through the MidiInput
+     * @param {Boolean} isRecording Status from MidiInput
+     */
+    setRec(isRecording) {
+        this.rec = isRecording;
     }
 }
 
