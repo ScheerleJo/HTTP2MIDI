@@ -4,7 +4,8 @@
   "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI Signals",
   "main": "index.js",
   "scripts": {
-    "startup": "node index.js"
+    "startup": "node index.js",
+    "build": "pkg package.json"
   },
   "bin": {
     "http2midi": "./index.js"
@@ -30,5 +31,15 @@
   },
   "devDependencies": {
     "eslint": "^8.15.0"
+  },
+  "pkg": {
+    "assets": [
+      "scripts/**/*",
+      "config/**/*",
+      "node_modules/**/*"
+    ],
+    "targets": [
+      "node20-win-x64"
+    ]
   }
 }

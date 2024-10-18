@@ -3,28 +3,26 @@ console.log(`HTTP2MIDI ${config.get('application:version')}`);
 console.log('Webserver for communication between Companion and Studio One\nTrying to start the server...\n');
 
 const feedback = require('./scripts/feedback');
-const functions = require('./scripts/functions');
+const { StudioOneFunction, PresenterFunction, myClass } = require('./scripts/functions');
 const midi = require('./scripts/midi');
-const swagger = require ('./config/swagger');
+const {swaggerUi, swaggerSpec} = require ('./config/swagger');
 const express = require('express');
 const app = express();
 
 //#region Startup Things
-app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.swaggerSpec));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 let output = new midi.MidiOutput(config.get('midiOutputConfig'));
-if(!config.get('midiOutputConfig').active) { // Without a Midi-Output, the application is useless
-    console.error('No MIDI-Output selected. Please check your configuration');
+let input = new midi.MidiInput(config.get('midiInputConfig'));
+
+const studioOne = new StudioOneFunction(output);
+const presenter = new PresenterFunction(output);
+const myFunctions = new myClass(output);      // Call your new function class here
+
+if(input.active) input.activateMidiListener(studioOne);
+if(!output.active) { // Without a Midi-Output, the application is useless
+    console.error('No MIDI-Output active. Please check your configuration');
     kill();
 }
-
-const studioOne =  new functions.StudioOneFunction(output);
-const presenter = new functions.PresenterFunction(output);
-const myFunctions = new functions.myClass(output);      // Call your new function class here
-
-let input = new midi.MidiInput(config.get('midiInputConfig'));
-if(config.get('midiInputConfig').active) input.activateMidiListener(studioOne);
-
 
 /**
  * shuts down the Webserver gracefully
@@ -70,14 +68,20 @@ app.get('/myFunctions', (req, res) => {
 /**
  * builds the Webserver
  */
-app.listen(config.get('server:port'), () =>{        
-    console.log(`Server running on Port ${config.get('server:port')}\n`);
-});
+if(output.active){
+    app.listen(config.get('server:port'), () =>{        
+        console.log(`Server running on Port ${config.get('server:port')}\n`);
+    });
+}
 
 
 function kill() {
     console.warn('Application will shut down');
-    if(input || false) input.closeMidiInput();
-    output.closeMidiOutput();
-    this.process.exit();
+    if(input.active) input.closeMidiInput();
+    if(output.active) output.closeMidiOutput();
+    const rl = require('node:readline').createInterface({input: this.process.stdin, output: this.process.stdout});
+    rl.question('\nServer will shutdown after pressing [Enter]...', () => {
+        rl.close();
+        this.process.exit();
+    });
 }
