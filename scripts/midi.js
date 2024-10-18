@@ -2,8 +2,11 @@ const midiIO = require('easymidi');
 
 class MidiOutput {
     constructor(config) {
-        this.midiOutput = new midiIO.Output(config.name);
-        console.log(`MIDI-Output ${config.name} is active`);
+        if(midiIO.getOutputs().includes(config.name)) {
+            this.midiOutput = new midiIO.Output(config.name);
+            console.log(`MIDI-Output ${config.name} is active`);
+            this.active = true;
+        } else this.active = false;
     }
 
     closeMidiOutput() {
@@ -47,11 +50,13 @@ class MidiOutput {
 // Not yet functioning due to some weird behavior of Studio One, which is not sending any MIDI-Data
 class MidiInput {
     constructor(config) {
-        if (config.active) {
+        if(midiIO.getInputs().includes(config.name) && config.active) {
             this.midiInput = new midiIO.Input(config.name);
             console.log(`MIDI-Input ${config.name} is active`);
+            this.active = true;
         } else {
-            console.log('No MIDI-Input selected. Please check your configuration');
+            console.error('No MIDI-Input active. Please check your configuration');
+            this.active = false;
         }
     }
 
@@ -59,15 +64,9 @@ class MidiInput {
         this.midiInput.close();
     }
 
-    activateMidiListener() {
-        // Currently not working due to some weird behavior of Studio One and just trying to get some data out of the midi-Input
-        this.midiInput.on('sysex', (msg) => {
-            console.log(msg);
-        });
-        this.midiInput.on('clock', (msg) => {
-            console.log(msg);
-        });
+    activateMidiListener(studioOne) {
+        this.midiInput.on("start", () => studioOne.setRec(true));
+        this.midiInput.on("stop", () => studioOne.setRec(false));
     }
 }
-
 module.exports = {MidiOutput, MidiInput}

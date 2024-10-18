@@ -1,10 +1,11 @@
 {
   "name": "http2midi",
-  "version": "1.4",
+  "version": "1.4.1",
   "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI Signals",
   "main": "index.js",
   "scripts": {
-    "startup": "node index.js"
+    "startup": "node index.js",
+    "build": "pkg package.json"
   },
   "bin": {
     "http2midi": "./index.js"
@@ -21,14 +22,24 @@
   "author": "Josia Scheerle",
   "license": "MIT",
   "dependencies": {
-    "easymidi": "^2.1.0",
+    "easymidi": "^3.1.0",
     "express": "^4.21.0",
     "find-process": "^1.4.7",
     "nconf": "^0.12.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^4.6.3"
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "eslint": "^8.15.0"
+  },
+  "pkg": {
+    "assets": [
+      "scripts/**/*",
+      "config/**/*",
+      "node_modules/**/*"
+    ],
+    "targets": [
+      "node20-win-x64"
+    ]
   }
 }

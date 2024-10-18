@@ -148,9 +148,21 @@ The parameter `*myAction*` is the exact name of the function that you have creat
 
 For Debugging you can also write the JS-Doc style Comments before each method in your Class. That way, when you call the [`api-docs`](http://localhost:8010/api-docs) you have all your functions listed and can check each indivudial one.
 
-## Future Plans
+## Compiling
 
-- handle midi-input to search for start/stop
+You can compile http2midi with `pkg` from `yao-pkg`. To use this, simply run the command:
+
+```CMD
+  npm install -g @yao-pkg/pkg
+```
+
+After Installing you can run the following command, that compiles the server and creates a executable.
+
+```CMD
+  npm run build
+```
+
+!Important! It is crucial, that the `http2midi.exe` stays in the folder, since the configuration uses a dynamic path to read the `config.json`.
 
 ## Developer
 

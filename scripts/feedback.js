@@ -1,10 +1,6 @@
 const find = require('find-process');
 
-module.exports = {
-    getPresenterStatus,
-    getStudioOneStatus
-}
-
+module.exports = { getPresenterStatus, getStudioOneStatus };
 
 let activeStudioOne = false;
 let activePresenter = false;
@@ -59,7 +55,6 @@ function getPresenterStatus() {
 function getStudioOneStatus() {
     return activeStudioOne;
 }
-
 
 constantStudioOneStatus();
 constantPresenterStatus();
