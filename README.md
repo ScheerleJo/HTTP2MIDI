@@ -55,10 +55,7 @@ If you want to test single functions, you call the `http://localhost:8010/api-do
 
 ! Warning!
 
-You are in need for the Desktop Software Development Kit in C++ and a [Python Version](https://www.python.org/downloads/). You have to install these before installing your node packages.
-
-For the Desktop Software Development Kit in C++ you simply have to downlad and install the [Installer](https://visualstudio.microsoft.com/de/downloads/) (The Community Version is free and supported).
-Next you open the installer if it isn't already, and select the Desktop Software Development Kit in C++. You don't need anything else for this application. After this installation you are good to go!
+You are in need for a [Python Version](https://www.python.org/downloads/). You have to install python before installing your node packages.
 
 Like any other Node.js Webserver, you download this repository and extract it into a folder of your choice. In there, you open the command prompt and type in:
 
