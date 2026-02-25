@@ -1,6 +1,6 @@
 {
   "name": "http2midi",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI Signals",
   "main": "index.js",
   "scripts": {
