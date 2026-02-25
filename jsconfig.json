@@ -4,7 +4,8 @@
         "moduleResolution": "Node",
         "target": "ES2020",
         "jsx": "preserve",
-        "strictFunctionTypes": true
+        "strictFunctionTypes": true,
+        "ignoreDeprecations": "6.0"
     },
     "exclude": [
         "node_modules",
