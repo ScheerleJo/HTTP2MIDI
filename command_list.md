@@ -24,7 +24,7 @@ http://*myIP*:8010/kill
 
 ### /studioOne
 
-The `/studioOne` branch is for requesting action triggering some function in either Studio One or Presenter.
+The `/studioOne` branch is for triggering functions in Studio One.
 A command in the `/studioOne` branch is created like this
 
 ```url
@@ -34,8 +34,8 @@ http://*myIP*:8010/studioOne?action=*myAction*
 - action=startRec
 - action=stopRec
 - action=setMarker
-- action=setEndMarker
-- action=normalize
+- action=setSelection
+- action=normalizeAudio
 - action=exportAudio
 
 ### /presenter
@@ -43,14 +43,14 @@ http://*myIP*:8010/studioOne?action=*myAction*
 the `/presenter` branch does basically the same thing as the `/studioOne` branch but for the software Presenter by Worship Tools.
 
 ```url
-http://*myIP*:8010/studioOne?action=*myAction*
+http://*myIP*:8010/presenter?action=*myAction*
 ```
 
-- action=changeItem
-- action=prevItem
+- action=toFirstItem
+- action=previousItem
 - action=nextItem
-- action=changeSlide
-- action=prevSlide
+- action=toFirstSlide
+- action=previousSlide
 - action=nextSlide
 
 ## /get

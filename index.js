@@ -18,6 +18,9 @@ const studioOne = new StudioOneFunction(output);
 const presenter = new PresenterFunction(output);
 const myFunctions = new myClass(output);      // Call your new function class here
 
+let server = null;
+let shuttingDown = false;
+
 if(input.active) input.activateMidiListener(studioOne);
 if(!output.active) { // Without a Midi-Output, the application is useless
     console.error('No MIDI-Output active. Please check your configuration');
@@ -25,63 +28,83 @@ if(!output.active) { // Without a Midi-Output, the application is useless
 }
 
 /**
+ * Returns the query parameter as string, or undefined if it is missing or not a single value
+ * @param {*} value value from req.query
+ * @returns {string|undefined}
+ */
+function queryString(value) {
+    return typeof value === 'string' ? value : undefined;
+}
+
+/**
+ * Executes a whitelisted action of the given handler and sends the resulting status code
+ * @param {object} handler instance of a function class
+ * @param {string[]} allowedActions names of the methods that may be called
+ * @param {*} status status that will be passed to the action
+ */
+function handleAction(req, res, handler, allowedActions, status) {
+    const action = queryString(req.query.action);
+    if(!action || !allowedActions.includes(action)) return res.sendStatus(404);
+    const retVal = handler[action](status);
+    res.sendStatus(req.query.src === 'companion' ? 200 : (retVal || 200));
+}
+
+/**
  * shuts down the Webserver gracefully
  */
 app.get('/kill', (req, res) => {
     res.json({'status':'Shutdown'});
-    kill()
+    kill();
 });
 /**
  * /studioOne?action=... is used to handle the requests from Companion for Studio One
  */
 app.get('/studioOne', (req, res) => {
-    if(studioOne[req.query.action]) {
-        let retVal = studioOne[req.query.action](feedback.getStudioOneStatus());
-        res.sendStatus(req.query.src == 'companion' ? 200 : retVal); 
-    } else res.sendStatus(404);
+    handleAction(req, res, studioOne, StudioOneFunction.ACTIONS, feedback.getStudioOneStatus());
 });
 /**
  * /presenter?action=... is used to handle the requests from Companion for Presenter
  */
 app.get('/presenter', (req, res) => {
-    if(presenter[req.query.action]) {
-        let retVal = presenter[req.query.action](feedback.getPresenterStatus());
-        res.sendStatus(req.query.src == 'companion' ? 200 : retVal); 
-    } else res.sendStatus(404);
+    handleAction(req, res, presenter, PresenterFunction.ACTIONS, feedback.getPresenterStatus());
 });
 /**
  * /get is used to handle the status requests from Companion for constant updates
  */
 app.get('/get', (req, res) => {
-    let functionName = 'sendCompanion' + req.query.feedback.charAt(0).toUpperCase() + req.query.feedback.slice(1);
+    const key = queryString(req.query.feedback);
+    const functionName = key && Object.hasOwn(StudioOneFunction.FEEDBACK, key) ? StudioOneFunction.FEEDBACK[key] : undefined;
+    if(!functionName) return res.sendStatus(404);
     res.send(studioOne[functionName]());
-}); 
+});
 
 
 // branch for your custom functions
 app.get('/myFunctions', (req, res) => {
-    if(myFunctions[req.query.action]) {
-        res.json(myFunctions[req.query.action]);
-    } else res.sendStatus(404);
+    handleAction(req, res, myFunctions, myClass.ACTIONS);
 });
 
 /**
  * builds the Webserver
  */
 if(output.active){
-    app.listen(config.get('server:port'), () =>{        
+    server = app.listen(config.get('server:port'), () =>{
         console.log(`Server running on Port ${config.get('server:port')}\n`);
     });
 }
 
 
 function kill() {
+    if(shuttingDown) return;
+    shuttingDown = true;
     console.warn('Application will shut down');
+    if(server) server.close();
     if(input.active) input.closeMidiInput();
     if(output.active) output.closeMidiOutput();
-    const rl = require('node:readline').createInterface({input: this.process.stdin, output: this.process.stdout});
+    if(!process.stdin.isTTY) process.exit();
+    const rl = require('node:readline').createInterface({input: process.stdin, output: process.stdout});
     rl.question('\nServer will shutdown after pressing [Enter]...', () => {
         rl.close();
-        this.process.exit();
+        process.exit();
     });
 }

@@ -16,7 +16,8 @@ const options = {
             }
         }
     },
-    apis: ['./scripts/*.js'],
+    // absolute path, so the docs also work when started from another folder or as exe
+    apis: [require('node:path').join(__dirname, '..', 'scripts', 'functions.js')],
 }
 
 const swaggerSpec = swaggerJSDoc(options);
