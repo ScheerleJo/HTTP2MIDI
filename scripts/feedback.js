@@ -1,4 +1,4 @@
-const find = require('find-process');
+const find = require('find-process').default;
 
 module.exports = { getPresenterStatus, getStudioOneStatus };
 
@@ -17,27 +17,19 @@ function timeout(ms) {
 }
 
 /**
- * Checks if the Presenter is running and sets the activePresenter variable accordingly
+ * Checks every second if Studio One and Presenter are running and sets the status variables accordingly.
+ * Uses a single process lookup for both applications. If the lookup fails, the last known status is kept.
  */
-async function constantPresenterStatus() {
-    // eslint-disable-next-line no-constant-condition
+async function constantProcessStatus() {
     while(true) {
-        var list = await find('name', 'Presenter');
-        if(list.length > 0)  activePresenter = true;
-        else activePresenter = false;
-        await timeout(1000);
-    }
-}
-
-/**
- * Checks if Studio One is running and sets the activeStudioOne variable accordingly
- */
-async function constantStudioOneStatus() {
-    // eslint-disable-next-line no-constant-condition
-    while(true) {
-        var list = await find('name', 'Studio One');
-        if(list.length > 0)  activeStudioOne = true;
-        else activeStudioOne = false;
+        try {
+            const list = await find('name', /Studio One|Presenter/);
+            const names = list.map(p => p.cmd || p.name || '');
+            activeStudioOne = names.some(n => n.includes('Studio One'));
+            activePresenter = names.some(n => n.includes('Presenter'));
+        } catch (err) {
+            console.warn(`Warning: Process status could not be determined: ${err.message}`);
+        }
         await timeout(1000);
     }
 }
@@ -56,5 +48,4 @@ function getStudioOneStatus() {
     return activeStudioOne;
 }
 
-constantStudioOneStatus();
-constantPresenterStatus();
+constantProcessStatus();

@@ -22,15 +22,17 @@
   "author": "Josia Scheerle",
   "license": "MIT",
   "dependencies": {
-    "easymidi": "^3.1.0",
-    "express": "^4.21.0",
-    "find-process": "^1.4.7",
-    "nconf": "^0.12.1",
-    "swagger-jsdoc": "^6.2.8",
+    "easymidi": "^3.2.0",
+    "express": "^5.3.0",
+    "find-process": "^2.1.1",
+    "nconf": "^0.13.0",
+    "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "eslint": "^8.15.0"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0"
   },
   "pkg": {
     "assets": [
@@ -41,5 +43,10 @@
     "targets": [
       "node24-win-x64"
     ]
+  },
+  "overrides": {
+    "swagger-jsdoc": {
+      "glob": "^14.0.6"
+    }
   }
 }

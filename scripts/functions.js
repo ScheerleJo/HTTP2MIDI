@@ -1,4 +1,7 @@
 class PresenterFunction {
+    /** Actions that may be called via /presenter?action=... */
+    static ACTIONS = ['toFirstItem', 'previousItem', 'nextItem', 'toFirstSlide', 'previousSlide', 'nextSlide'];
+
     constructor(midiOutput) {
         this.midiOut = midiOutput;
     }
@@ -162,6 +165,14 @@ class PresenterFunction {
 
 
 class StudioOneFunction {
+    /** Actions that may be called via /studioOne?action=... */
+    static ACTIONS = ['startRec', 'stopRec', 'setMarker', 'setSelection', 'normalizeAudio', 'exportAudio'];
+    /** Feedback values that may be requested via /get?feedback=... */
+    static FEEDBACK = {
+        recStatus: 'sendCompanionRecStatus',
+        markerCount: 'sendCompanionMarkerCount',
+    };
+
     constructor(midiOutput) {
         this.midiOut = midiOutput;
         this.rec = false;
@@ -188,7 +199,7 @@ class StudioOneFunction {
     startRec(status) {
         if(!this.checkStudioOne('startRec', status)) return 404;
         if(this.rec){
-            console.warn('Warning: There is currently an active recoring');
+            console.warn('Warning: There is currently an active recording');
             return 409;
         }
         console.info('S1: Recording will be started');
@@ -210,14 +221,14 @@ class StudioOneFunction {
      *          404:
      *              description: Error, because Studio One isn't running
      *          409:
-     *              description: Error, because Studio One already has no an active recording
+     *              description: Error, because Studio One has no active recording
      *  @param {boolean} status status of Studio One
-     *  @returns {number} 200 - Recording has stopped, 404 - Error, because Studio One isn't running, 409 - Error, because Studio One already has no an active recording
+     *  @returns {number} 200 - Recording has stopped, 404 - Error, because Studio One isn't running, 409 - Error, because Studio One has no active recording
      */
     stopRec(status) {
         if(!this.checkStudioOne('stopRec', status)) return 404;
         if(!this.rec){
-            console.warn('Waring: There is currently no active recoring');
+            console.warn('Warning: There is currently no active recording');
             return 409;
         }
         console.info('S1: Recording will be stopped');
@@ -270,7 +281,7 @@ class StudioOneFunction {
     setSelection(status) {
         if(!this.checkStudioOne('setSelection', status)) return 404;
         if(this.rec){
-            console.warn('Warning: There is currently an active recoring');
+            console.warn('Warning: There is currently an active recording');
             return 409;
         }
         console.info('S1: Markers will be set correctly to recording length');
@@ -359,11 +370,12 @@ class StudioOneFunction {
      *             description: Studio One is currently recording
      *          false:
      *            description: Studio One is not recording
-     *  @returns {number} the count of markers in the current recording
+     *  @returns {string} the status of the current recording ("true"/"false")
      */
-    sendCompanionMarkerCount() {
-        return this.marker.toString();
+    sendCompanionRecStatus() {
+        return this.rec.toString();
     }
+
     /**
      * @swagger
      *  /get?feedback=markerCount:
@@ -374,10 +386,10 @@ class StudioOneFunction {
      *      responses:
      *          0-N:
      *            description: The current Marker Count
-     *  @returns {boolean} the status of the current recording
+     *  @returns {string} the count of markers in the current recording
      */
-    sendCompanionRecStatus(){
-        return (this.rec).toString();
+    sendCompanionMarkerCount() {
+        return this.marker.toString();
     }
 
     /**
@@ -395,26 +407,31 @@ class StudioOneFunction {
 }
 
 class myClass {
+    /** Actions that may be called via /myFunctions?action=... - add the names of your own functions here */
+    static ACTIONS = ['myFunction'];
+
     constructor(midiOutput) {
         this.midiOut = midiOutput;
     }
     /**
      *  @swagger
-     *  /yourOwnClass?action=yourOwnFunction:
+     *  /myFunctions?action=myFunction:
      *  get:
      *      tags: ["YourOwnClass"]
      *      summary: "Your own function"
      *      description: "Describe your own function"
      *      responses:
-     *      200:
-     *          description: Your own function has been executed
-     *      404:
-     *          description: Error, because something went wrong
+     *          200:
+     *              description: Your own function has been executed
+     *          404:
+     *              description: Error, because something went wrong
+     *  @returns {number} HTTP status code
      */
     myFunction() {
         // Implement your own function here
         // you Can also copy this function as a template for your own functions
-        console.info('myClass: Your own function will be executed'); 
+        console.info('myClass: Your own function will be executed');
+        return 200;
     }
 }
 
