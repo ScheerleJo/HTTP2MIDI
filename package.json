@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "startup": "node index.js",
-    "build": "pkg package.json --compress GZip"
+    "build": "pkg package.json --compress GZip --output dist/http2midi.exe"
   },
   "bin": {
     "http2midi": "./index.js"
@@ -31,22 +31,31 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@yao-pkg/pkg": "^6.25.0",
     "eslint": "^10.15.0",
     "globals": "^17.14.0"
   },
   "pkg": {
     "assets": [
-      "scripts/**/*",
-      "config/**/*",
-      "node_modules/**/*"
+      "config/server_config.json",
+      "scripts/functions.js",
+      "node_modules/swagger-ui-dist/**/*",
+      "node_modules/@julusian/midi/prebuilds/midi-win32-x64/**/*"
     ],
     "targets": [
       "node24-win-x64"
+    ],
+    "scripts": [
+      "scripts/**/*.js",
+      "config/**/*.js"
     ]
   },
   "overrides": {
     "swagger-jsdoc": {
       "glob": "^14.0.6"
     }
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

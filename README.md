@@ -1,80 +1,94 @@
 # HTTP2MIDI
 
 This application uses a Node.js Webserver, which handles basic conversion from an HTTP-Request to a MIDI signal.
-The MIDI signal controls the Recording DAW (Digital Audio Workstation), in this case [Presonus' Studio One](https://www.presonus.com/products/Studio-One) on Midi-Channel 1. In Addition to that, there is the control for "Presenter" by [WorshipTools](https://www.worshiptools.com/en-us) on Midi-Channel 2.
+The MIDI signal controls the Recording DAW (Digital Audio Workstation), in this case [Presonus' Studio One](https://www.presonus.com/products/Studio-One), and "Presenter" by [WorshipTools](https://www.worshiptools.com/en-us).
 
-The tool is also very customizable with the new rework in Version v1.4. More on that [here](#your-own-customization)
+The tool is also very customizable since the rework in Version v1.4. More on that [here](#your-own-customization)
 
 ## Our Usecase
 
 The basic idea is to press a button on an Elgato Streamdeck running [Companion](https://github.com/bitfocus/companion). It sends an HTTP-Request to the computer running Studio One and Presenter for audio recording and visuals. There the MIDI signal gets created and input into the programs.
 
-In our case, the MIDI signal gets sent through an audio interface that supports midi. That allows us to create and get the MIDI commands on one Laptop via hardware and no additional software.
-However, it would be smarter to use a MIDI-Loopback adapter like [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) from Tobias Erichson.
-In a future version of this software, I want to eliminate the need for separate soft- or hardware by creating my own in software MIDI-Loopback.
-
-! The attribute "original Name" is just for me, so I dont have to look up the original Name of our local MIDI-Interface :D
+In our case, the MIDI signal gets sent through an audio interface that supports MIDI. That allows us to create and get the MIDI commands on one laptop via hardware.
+Without such an interface, you need a software MIDI-Loopback, see [MIDI ports](#midi-ports).
 
 ## How it works
 
-The already mentioned concept is that the Webserver gets an HTTP-Request which you can find in the [Command-list](./command_list.md).
+The Webserver gets an HTTP-Request, which you can find in the [Command-list](./command_list.md).
 
-The Webserver then outputs a normal MIDI-CC-Signal `CC = Control-Change` looking something like that but in hex for Studio One:
-
-```js
-{
-  channel: 1,
-  controller: 0-127,
-  velocity: 0-127
-}
-```
-
-and the following sample for Presenter:
+It then outputs a MIDI-CC-Signal `CC = Control-Change` for Studio One:
 
 ```js
 {
-  note: 1-6,
-  value: 127,
-  channel: 2
+  channel: 1,         // = MIDI channel 2 (easymidi counts channels from 0)
+  controller: 85-90,
+  value: 127          // followed by value 0 after 200ms
 }
 ```
 
-For your use, you have to edit the parameters of the server_config.json config-file. That is for several reasons:
+and a Note-On for Presenter:
 
-1. To suit your environment
-2. To test/debug, or
-3. even upgrade the software.
+```js
+{
+  note: 0-6,
+  velocity: 127,
+  channel: 2          // = MIDI channel 3
+}
+```
 
-If you use the software and have ideas to upgrade it, please let me know. This applies if you upgrade the software on your own, too.
+The recording status (`/get?feedback=recStatus`) is only set by the MIDI feedback from Studio One, so it shows whether a recording is really running.
 
 ### Swagger
 
-If you want to test single functions, you call the `http://localhost:8010/api-docs` which is the integrated swagger-UI. There you have all the functions listed and can check each indivudial one.
+If you want to test single functions, open `http://localhost:8010/api-docs`, the integrated Swagger-UI. There you have all functions listed and can check each individual one.
 
 ## Installation
 
-! Warning!
+### Option 1: Download the release (recommended)
 
-You are in need for a [Python Version](https://www.python.org/downloads/). You have to install python before installing your node packages.
+1. Download the latest `http2midi-<version>-win-x64.zip` from the [Releases](https://github.com/ScheerleJo/http2midi/releases) page.
+2. Extract it into a folder of your choice.
+3. Set up your [MIDI ports](#midi-ports) and enter their names in `config/server_config.json`.
+4. Start `http2midi.exe`.
 
-Like any other Node.js Webserver, you download this repository and extract it into a folder of your choice. In there, you open the command prompt and type in:
+Node.js is not needed. If the `config` folder is missing, http2midi creates a default configuration next to the exe on the first start. You can start the exe from anywhere (e.g. via a shortcut or autostart), the configuration is always read from the folder of the exe.
+
+### Option 2: Run from source
+
+You need [Node.js](https://nodejs.org/) 24 or newer. Download or clone this repository, open a command prompt in the folder and type in:
 
 ```cmd
 npm install
-```
-
-After that, you are ready to go and can start the application with the command:
-
-```cmd
 npm run startup
 ```
 
+No Python or build tools are needed, the MIDI library ships precompiled binaries.
+
+### MIDI ports
+
+http2midi needs one MIDI port to send commands (`midiOutputConfig`) and optionally one to receive the recording status from Studio One (`midiInputConfig`). Enter the exact port names in `config/server_config.json`:
+
+```json
+"midiOutputConfig": { "name": "http2midiOut", "active": true },
+"midiInputConfig":  { "name": "http2midiIn",  "active": true }
+```
+
+If a port is not found, http2midi lists all available MIDI ports at startup, so you can copy the correct name.
+
+Ways to get the ports:
+
+- **MIDI interface (hardware):** use the ports of your audio interface.
+- **[loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)** by Tobias Erichsen: create two ports, e.g. `http2midiOut` and `http2midiIn`.
+- **Windows MIDI Services** (Windows 11): the new Windows MIDI stack has built-in loopback endpoints, which can be created in the Windows MIDI Settings app without additional software. *Not yet tested with Studio One and Presenter.*
+
+All settings in the config file can also be overridden on the command line, e.g. `http2midi.exe --server:port=8011`.
+
 ### Studio One Setup
 
-For the configuration in Studio-One, you have to follow two main steps.
+For the configuration in Studio One, you have to follow two main steps.
 
-First, you create a "Control Surface" as a MIDI input Listener. There you select the midi input you want to listen on.
-For the server to function correctly and get the current recording status, you need to set up a new instrument and select the MIDI output you have entered in the config file for http2midi. You also need to activate at least one of the midi channels for Studio-One to send the information.
+First, you create a "Control Surface" as a MIDI input listener. There you select the MIDI port that http2midi sends to (`midiOutputConfig`).
+For the server to get the current recording status, you need to set up a new instrument and select the MIDI port you have entered as `midiInputConfig`. You also need to activate at least one of the MIDI channels for Studio One to send the information.
 
 ## Your Own Customization
 
@@ -82,84 +96,81 @@ Since version 1.4, http2midi can be easily configured and extended to cover your
 
 Depending on your requirements, 3 steps are necessary.
 
-1. this step can possibly be skipped if you only want to send notes and CC signals via midi. Otherwise you have to add another function in the scripts folder in the midi.js file in the MidiOutput class with the desired Midi signal type. You can find the documentation of the package [here](https://www.npmjs.com/package/easymidi).
-  
+1. This step can be skipped if you only want to send notes and CC signals via MIDI. Otherwise you have to add another function to the `MidiOutput` class in `scripts/midi.js` with the desired MIDI signal type. You can find the documentation of the package [here](https://www.npmjs.com/package/easymidi).
+
     ```JS
-      // This is a sample for a function in the midi.js to send a midi note
-      sendMidiNoteOn(note, channel = 2) {
+    // This is a sample for a function in the midi.js to send a midi note
+    sendMidiNoteOn(note, channel = 2) {
+        if(!this.active) return;
         this.midiOutput.send("noteon", {
-          note: note,
-          value: 127,
-          channel: channel
+            note: note,
+            velocity: 127,
+            channel: channel
         });
-      }
-    ```
-
-2. in functions.js you can now add the template class “YourOwnClass” with your own required functions.  You can also rename it. But be careful that you also have to change this name in index.js in step 3.
-
-    ```JS
-    class YourOwnClass {
-      constructor(midiOutput) {
-          this.midiOut = midiOutput;
-      }
-      /**
-       *  @swagger
-      *  /yourOwnClass?action=yourOwnFunction:
-      * get:
-      *     tags: ["YourOwnClass"]
-      *    summary: "Your own function"
-      *   description: "Describe your own function"
-      * responses:
-      *    200:
-      *     description: Your own function has been executed
-      *   404:
-      *    description: Error, because something went wrong
-      */
-      yourOwnFunction() {
-          // Implement your own function here
-          // you Can also copy this function as a template for your own functions
-          console.info('YourOwnClass: Your own function will be executed'); 
-      }
     }
     ```
 
-    Once you have created all the required functions, step 3 follows.
-
-3. Finally, you may need to customize the index.js file. If you have changed the name of the classes, you must also do this here. Otherwise, you can also make adjustments here if you want more than just the function call to be executed for each request.
+2. In `scripts/functions.js` you can extend the template class `myClass` with your own functions. Every function that should be callable via HTTP has to be added to the `ACTIONS` list, and it should return an HTTP status code.
 
     ```JS
-      // Your own branch for custom functions
-      app.get('/yourOwnFunction', (req, res) => {
-          // Add your own function here
-          res.json(yourOwnFunction[req.query.action]);
-      });
+    class myClass {
+        /** Actions that may be called via /myFunctions?action=... */
+        static ACTIONS = ['myFunction'];
+
+        constructor(midiOutput) {
+            this.midiOut = midiOutput;
+        }
+        /**
+         *  @swagger
+         *  /myFunctions?action=myFunction:
+         *  get:
+         *      tags: ["YourOwnClass"]
+         *      summary: "Your own function"
+         *      description: "Describe your own function"
+         *      responses:
+         *          200:
+         *              description: Your own function has been executed
+         */
+        myFunction() {
+            console.info('myClass: Your own function will be executed');
+            this.midiOut.sendMidiNoteOn(10);
+            return 200;
+        }
+    }
     ```
 
-If you now start the Node.js server, you can call the respective function via the URL
+3. If you rename the class or want to add a new route, adjust `index.js`:
+
+    ```JS
+    app.get('/myFunctions', (req, res) => {
+        handleAction(req, res, myFunctions, myClass.ACTIONS);
+    });
+    ```
+
+If you now start the server, you can call your function via the URL
 
   ``` URL
   http://localhost:8010/myFunctions?action=*myAction*
   ```
 
-The parameter `*myAction*` is the exact name of the function that you have created from your previously defined methods in functions.js.
+The parameter `*myAction*` is the exact name of the function from the `ACTIONS` list.
 
-For Debugging you can also write the JS-Doc style Comments before each method in your Class. That way, when you call the [`api-docs`](http://localhost:8010/api-docs) you have all your functions listed and can check each indivudial one.
+With the JS-Doc style `@swagger` comments before each method, your functions are also listed in the [`api-docs`](http://localhost:8010/api-docs).
 
 ## Compiling
 
-You can compile http2midi with `pkg` from `yao-pkg`. To use this, simply run the command:
+http2midi is compiled with [`@yao-pkg/pkg`](https://github.com/yao-pkg/pkg), which is installed as a dev dependency. Run:
 
 ```CMD
-  npm install -g @yao-pkg/pkg
+npm install
+npm run build
 ```
 
-After Installing you can run the following command, that compiles the server and creates a executable.
+The executable is created at `dist/http2midi.exe`.
 
-```CMD
-  npm run build
-```
+### Releases
 
-!Important! It is crucial, that the `http2midi.exe` stays in the folder, since the configuration uses a dynamic path to read the `config.json`.
+When a version tag is pushed (e.g. `git tag v1.5.0` and `git push origin v1.5.0`), a GitHub Action builds the exe and publishes a ZIP with the exe, the default config and the docs as a GitHub Release.
 
 ## Developer
 

@@ -1,12 +1,26 @@
 const midiIO = require('easymidi');
 
+/**
+ * Logs the available MIDI ports, so the user can copy the correct name into the configuration
+ * @param {string} kind 'Output' or 'Input'
+ * @param {string[]} ports names of the available ports
+ */
+function logAvailablePorts(kind, ports) {
+    console.error(`Available MIDI-${kind}s: ${ports.length ? ports.map(p => `"${p}"`).join(', ') : 'none'}`);
+}
+
 class MidiOutput {
     constructor(config) {
-        if(midiIO.getOutputs().includes(config.name)) {
+        const outputs = midiIO.getOutputs();
+        if(outputs.includes(config.name)) {
             this.midiOutput = new midiIO.Output(config.name);
             console.log(`MIDI-Output ${config.name} is active`);
             this.active = true;
-        } else this.active = false;
+        } else {
+            this.active = false;
+            console.error(`MIDI-Output "${config.name}" not found.`);
+            logAvailablePorts('Output', outputs);
+        }
     }
 
     closeMidiOutput() {
@@ -62,7 +76,8 @@ class MidiInput {
             console.log(`MIDI-Input ${config.name} is active`);
             this.active = true;
         } else {
-            console.error(`MIDI-Input ${config.name} not found. Please check your configuration`);
+            console.error(`MIDI-Input "${config.name}" not found. Please check your configuration`);
+            logAvailablePorts('Input', midiIO.getInputs());
         }
     }
 
