@@ -38,4 +38,6 @@ class Config {
         return this.nconf.get(key);
     }
 }
+Config.BASE_DIR = BASE_DIR;
+Config.CONFIG_FILE = CONFIG_FILE;
 module.exports = Config;
