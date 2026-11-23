@@ -53,6 +53,16 @@ If you want to test single functions, open `http://localhost:8010/api-docs`, the
 
 Node.js is not needed. If the `config` folder is missing, http2midi creates a default configuration next to the exe on the first start. You can start the exe from anywhere (e.g. via a shortcut or autostart), the configuration is always read from the folder of the exe.
 
+#### Tray icon
+
+The exe runs in the background without a console window, so it can't be closed by accident. It is not shown in the taskbar or with Alt+Tab, only as an icon in the notification area (hidden icons, the arrow next to the clock). Right-click the icon for:
+
+- **Log anzeigen** (also by double-click): opens a window with the live log. Closing this window does not stop http2midi.
+- **API-Docs im Browser öffnen**: opens the Swagger-UI.
+- **http2midi beenden**: stops http2midi.
+
+All output is also written to `logs/http2midi.log` next to the exe (the previous run is kept as `http2midi.old.log`). If http2midi can't start, e.g. because a MIDI port is not found or the port is already in use, the log window opens automatically.
+
 ### Option 2: Run from source
 
 You need [Node.js](https://nodejs.org/) 24 or newer. Download or clone this repository, open a command prompt in the folder and type in:
@@ -63,6 +73,8 @@ npm run startup
 ```
 
 No Python or build tools are needed, the MIDI library ships precompiled binaries.
+
+From source, http2midi runs in the console as usual. To test the tray icon, start it with `npm run startup -- --tray`.
 
 ### MIDI ports
 

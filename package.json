@@ -1,11 +1,11 @@
 {
   "name": "http2midi",
-  "version": "1.4.3",
+  "version": "1.6.0",
   "description": "A Webserver, which accepts HTTP-Requests and outputs MIDI Signals",
   "main": "index.js",
   "scripts": {
     "startup": "node index.js",
-    "build": "pkg package.json --compress GZip --output dist/http2midi.exe"
+    "build": "pkg package.json --compress GZip --output dist/http2midi.exe && node tools/set-gui-subsystem.js dist/http2midi.exe"
   },
   "bin": {
     "http2midi": "./index.js"
@@ -40,7 +40,9 @@
       "config/server_config.json",
       "scripts/functions.js",
       "node_modules/swagger-ui-dist/**/*",
-      "node_modules/@julusian/midi/prebuilds/midi-win32-x64/**/*"
+      "node_modules/@julusian/midi/prebuilds/midi-win32-x64/**/*",
+      "scripts/tray.ps1",
+      "Logo.ico"
     ],
     "targets": [
       "node24-win-x64"
